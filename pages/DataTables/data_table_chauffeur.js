@@ -4,7 +4,11 @@ $(document).ready(function() {
         serverSide: true,
         ajax: {
             url: '../api/modules/chauffeur_data.php',
+<<<<<<< HEAD
             type: 'POST', 
+=======
+            type: 'POST', // Utilisez la méthode POST
+>>>>>>> 31a8f6f8af12a5373a38ef98ca0cdcdac2925a58
         },
         dom: 'lBfrtip',
         buttons: [
