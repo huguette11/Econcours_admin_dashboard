@@ -176,7 +176,7 @@
 
     <?php include('modals/modal_candidat.php'); ?>
 
-
+    <script type="module" src="../Controllers/CandidatController.js"></script>
 
 
 

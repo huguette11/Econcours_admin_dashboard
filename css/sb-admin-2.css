@@ -24,7 +24,7 @@
   --white: #fff;
   --gray: #858796;
   --gray-dark: #5a5c69;
-  --primary: #4e73df;
+  --primary: #03572A;
   --secondary: #858796;
   --success: #1cc88a;
   --info: #36b9cc;
@@ -4134,6 +4134,7 @@ input[type="button"].btn-block {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+  
 }
 
 .navbar-nav .nav-link {
@@ -6407,7 +6408,7 @@ a.close.disabled {
 }
 
 .bg-primary {
-  background-color: #4e73df !important;
+  background-color: #03572A !important;
 }
 
 a.bg-primary:hover, a.bg-primary:focus,
@@ -10318,10 +10319,12 @@ a:focus {
 .sidebar {
   width: 6.5rem;
   min-height: 100vh;
+
 }
 
 .sidebar .nav-item {
   position: relative;
+  
 }
 
 .sidebar .nav-item:last-child {
@@ -11275,3 +11278,4 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+

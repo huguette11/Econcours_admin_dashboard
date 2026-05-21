@@ -1,9 +1,10 @@
 /* Même style que hover, mais appliqué en permanence si .active est présent */
 .sidebar .nav-item .nav-link.active {
-    background-color: #e1e6fd;   /* même fond que hover */
+    background-color: #ffff;   /* même fond que hover */
     color: black;              /* texte en bleu */
 }
 
 .sidebar .nav-item .nav-link.active i {
     color: black;              /* icône en bleu */
 }
+
