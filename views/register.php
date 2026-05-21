@@ -80,7 +80,7 @@
     <!-- ===== FOOTER ===== -->
    
     <script type="module">
-        import AdminController from "../controllers/AdminController.js";
+        import AdminController from "../Controllers/AdminController.js";
 
         document.addEventListener("DOMContentLoaded", () => {
             AdminController.initRegister();

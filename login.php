@@ -63,13 +63,26 @@
         </div>
     </section>
 
-    <script type="module">
-        import AdminController from "./controllers/AdminController.js";
+<script type="module">
+    import AdminController from "./Controllers/AdminController.js";
 
-        document.addEventListener("DOMContentLoaded", () => {
-            AdminController.initLogin();
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const form = document.getElementById("loginForm");
+
+        form.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const email = form.email.value;
+            const password = form.mot_de_passe.value;
+
+            await AdminController.login(email, password);
+
         });
-    </script>
+
+    });
+</script>
 
 </body>
 

@@ -117,6 +117,26 @@ export default class AdminController {
         return true;
     }
 
+    static async GetAllConcours(req, res) {
+
+    try {
+
+        const concours = await Concours.findAll();
+
+        res.json({
+            ok: true,
+            data: concours
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            ok: false,
+            message: error.message
+        });
+    }
+}
+
     static async loadDashboard() {
 
         const token = this.checkAuth();

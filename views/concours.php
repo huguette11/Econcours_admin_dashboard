@@ -90,7 +90,6 @@
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom</th>
                                                 <th class="text-center">Type de concours</th>
-                                                <th class="text-center">Description</th>
                                                 <th class="text-center">Frais d'inscription</th>
                                                 <th class="text-center">Nombre de postes</th>
                                                 <th class="text-center">Année</th>
@@ -101,22 +100,7 @@
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
                                         </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th class="text-center">N°</th>
-                                                <th class="text-center">Nom</th>
-                                                <th class="text-center">Type de concours</th>
-                                                <th class="text-center">Description</th>
-                                                <th class="text-center">Frais d'inscription</th>
-                                                <th class="text-center">Nombre de postes</th>
-                                                <th class="text-center">Année</th>
-                                                <th class="text-center">Date de début</th>
-                                                <th class="text-center">Date de fin</th>
-                                                <th class="text-center">Statut du concours</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
-                                        </tfoot>
-
+                                        
                                         <tbody id="concoursTableBody">
 
                                         </tbody>

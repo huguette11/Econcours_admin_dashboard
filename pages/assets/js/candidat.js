@@ -4,7 +4,11 @@ import CandidatController from "../../../Controllers/CandidatController.js";
 
 async function chargerCandidats() {
 
-    const candidats = await CandidatController.getAll();
+   const candidats = await CandidatController.getAll();
+
+candidats.forEach((candidat) => {
+
+});
 
     const tbody = document.querySelector("#dataTable tbody");
 

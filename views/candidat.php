@@ -177,6 +177,7 @@
     <?php include('modals/modal_candidat.php'); ?>
 
     <script type="module" src="../Controllers/CandidatController.js"></script>
+    <script type="module" src="../pages/assets/js/candidat.js"></script>
 
 
 
