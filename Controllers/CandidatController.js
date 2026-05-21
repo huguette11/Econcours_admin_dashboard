@@ -5,33 +5,42 @@ import AdminController from "./AdminController.js";
 
 export default class CandidatController {
 
-<<<<<<< HEAD
-    // =========================
-    // CHARGER TOUS LES CANDIDATS
-    // =========================
-=======
->>>>>>> 16e8206a582cfa67423733099a87e577f0430b07
-    static async getAll() {
+static async getAll() {
 
-        const token = AdminController.getToken();
+    const token = AdminController.getToken();
 
-        if (!token) {
-            console.warn("Aucun token admin");
-        }
-
-        const res = await CandidatModel.getAllCandidats(token);
-
-        if (!res.ok) {
-            console.log(res.data);
-            alert("Erreur chargement candidats");
-            return [];
-        }
-
-
-
-        return res.data.candidat || [];
+    if (!token) {
+        console.warn("Aucun token admin");
+        return [];
     }
 
+    const res = await CandidatModel.getAllCandidats(token);
+
+    console.log("REPONSE API :", res);
+
+    if (!res.ok) {
+        console.log(res.data);
+        alert("Erreur chargement candidats");
+        return [];
+    }
+
+    // CAS 1 : API retourne directement un tableau
+    if (Array.isArray(res.data)) {
+        return res.data;
+    }
+
+    // CAS 2 : API retourne { data: [...] }
+    if (Array.isArray(res.data.data)) {
+        return res.data.data;
+    }
+
+    // CAS 3 : API retourne { candidat: [...] }
+    if (Array.isArray(res.data.candidat)) {
+        return res.data.candidat;
+    }
+
+    return [];
+}
     static async initDataTable() {
 
         const tbody = document.getElementById("candidatTableBody");
@@ -84,7 +93,8 @@ export default class CandidatController {
         <button class="btn btn-danger btn-sm">
             <i class="fa fa-trash"></i>
         </button>
-    </td>
+    </td> 
+    </tr>
         `;
         });
 

@@ -148,7 +148,17 @@
 
     <?php include('modals/modal_concours.php'); ?>
 
-    <script type="module" src="../pages/assets/js/concours.js"></script>
+    <script type="module">
+
+        import ConcoursController from "../Controllers/ConcoursController.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            ConcoursController.initDataTable();
+
+        });
+
+        </script>
 
 
 
