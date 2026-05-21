@@ -29,6 +29,8 @@ export default class AdminModel {
             body: JSON.stringify(data)
         });
 
+        console.log("BODY FETCH :", JSON.stringify(data));
+
         const result = await res.json();
 
         return {

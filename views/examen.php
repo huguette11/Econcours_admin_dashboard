@@ -65,7 +65,7 @@
                                     <div class="text-left">
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#ajouter_categorie">Ajouter une catégorie <i
+                                                data-target="#ajouter_examen">Ajouter un examen <i
                                                     class="fa  fa-plus "></i></button>
                                         </div>
                                     </div>
@@ -80,7 +80,7 @@
                             <div class="card">
                                 <!-- Card header -->
                                 <div class="card-header border-0">
-                                    <h3 class="mb-0">Liste des catégories</h3>
+                                    <h3 class="mb-0">Liste des examens</h3>
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
@@ -88,30 +88,28 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
+                                                <th class="text-center">Date de l'examen</th>
+                                                <th class="text-center">Heure</th>
+                                                <th class="text-center">Lieu</th>
+                                                <th class="text-center">Coefficient</th>
+                                                <th class="text-center">Intitulé</th>
+                                                <th class="text-center">Type d'examen</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
+                                               <th class="text-center">N°</th>
+                                                <th class="text-center">Date de l'examen</th>
+                                                <th class="text-center">Heure</th>
+                                                <th class="text-center">Lieu</th>
+                                                <th class="text-center">Coefficient</th>
+                                                <th class="text-center">Intitulé</th>
+                                                <th class="text-center">Type d'examen</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
-                                        </tfoot>
-
-                                        <tbody>
-
-                                        </tbody>
-                                                <th class="text-center">Date de début</th>
-                                                <th class="text-center">Date de fin</th>
-                                                <th class="text-center">Statut du concours</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
                                         </tfoot>
 
                                         <tbody>
@@ -159,7 +157,7 @@
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <?php include('modals/modal_categorie.php'); ?>
+    <?php include('modals/modal_examen.php'); ?>
 
 
 

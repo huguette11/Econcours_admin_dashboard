@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>Paiement</title>
 
     <!-- Custom fonts for this template -->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -62,13 +62,13 @@
                                     <div class="col-lg-6 col-5 text-right">
 
                                     </div>
-                                    <div class="text-left">
+                                    <!-- <div class="text-left">
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#ajouter_categorie">Ajouter une catégorie <i
+                                                data-target="#ajouter_paiement">Ajouter une catégorie <i
                                                     class="fa  fa-plus "></i></button>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
 
                             </div>
@@ -80,7 +80,7 @@
                             <div class="card">
                                 <!-- Card header -->
                                 <div class="card-header border-0">
-                                    <h3 class="mb-0">Liste des catégories</h3>
+                                    <h3 class="mb-0">Liste des paiements</h3>
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
@@ -88,8 +88,10 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
+                                                <th class="text-center">Nom du candidat</th>
+                                                <th class="text-center">Concours</th>
+                                                <th class="text-center">Statut du paiement</th>
+                                                <th class="text-center">Voir détails</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
@@ -97,26 +99,20 @@
                                         <tfoot>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
+                                                <th class="text-center">Nom du candidat</th>
+                                                <th class="text-center">Concours</th>
+                                                <th class="text-center">Statut du paiement</th>
+                                                <th class="text-center">Voir détails</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
                                         </tfoot>
 
-                                        <tbody>
-
-                                        </tbody>
-                                                <th class="text-center">Date de début</th>
-                                                <th class="text-center">Date de fin</th>
-                                                <th class="text-center">Statut du concours</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
-                                        </tfoot>
 
                                         <tbody>
 
                                         </tbody>
+
                                     </table>
                                 </div>
                                 <!-- Card footer -->
@@ -159,7 +155,7 @@
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <?php include('modals/modal_categorie.php'); ?>
+    <?php include('modals/modal_paiement.php'); ?>
 
 
 
