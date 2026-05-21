@@ -25,33 +25,94 @@ export default class AdminController {
         return token;
     }
 
-    static async login(email, password) {
+    static initRegister() {
 
-        const res = await AdminModel.login({
-            email,
-            password
+        const form = document.getElementById("registerForm");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            const data = {
+                nom: formData.get("nom"),
+                prenom: formData.get("prenom"),
+                role: formData.get("role"),
+                telephone: formData.get("telephone"),
+                email: formData.get("email"),
+                mot_de_passe: formData.get("mot_de_passe")
+            };
+
+            console.log("DATA ENVOYEES :", data);
+
+            await this.register(data);
+
         });
-
-        if (!res.ok) {
-            alert(res.data.message || "Erreur connexion");
-            return false;
-        }
-
-        this.saveToken(res.data.token);
-
-        window.location.href = "dashboard.php";
-
-        return true;
     }
 
     static async register(data) {
 
         const res = await AdminModel.register(data);
 
+        console.log("REPONSE REGISTER :", res);
+
         if (!res.ok) {
-            alert(res.data.message || "Erreur inscription");
+
+            alert(res.data.error || res.data.message || "Erreur inscription");
+
             return false;
         }
+
+        alert(res.data.message);
+
+        window.location.href = "../login.php";
+
+        return true;
+    }
+
+    static initLogin() {
+
+        const form = document.getElementById("loginForm");
+
+        if (!form) return;
+
+        form.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            const email = formData.get("email");
+            const password = formData.get("mot_de_passe");
+
+            console.log("LOGIN DATA :", {
+                email,
+                password
+            });
+
+            await this.login(email, password);
+
+        });
+    }
+
+    static async login(email, mot_de_passe) {
+
+        const res = await AdminModel.login({
+            email,
+            mot_de_passe
+        });
+
+        if (!res.ok) {
+            alert(res.data.error || res.data.message || "Erreur connexion");
+            return false;
+        }
+
+        this.saveToken(res.data.token);
+
+        window.location.href = "views/admin.php";
 
         return true;
     }
