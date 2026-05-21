@@ -117,7 +117,7 @@
                                                 <th class="text-center">Supprimer</th>
                                         </tfoot>
 
-                                        <tbody>
+                                        <tbody id="concoursTableBody">
 
                                         </tbody>
                                     </table>
@@ -164,6 +164,7 @@
 
     <?php include('modals/modal_concours.php'); ?>
 
+    <script type="module" src="../pages/assets/js/concours.js"></script>
 
 
 

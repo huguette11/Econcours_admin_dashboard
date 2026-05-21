@@ -1,3 +1,5 @@
+// Controllers/CandidatController.js
+
 import CandidatModel from "../models/CandidatModel.js";
 import AdminController from "./AdminController.js";
 
@@ -14,6 +16,7 @@ export default class CandidatController {
         const res = await CandidatModel.getAllCandidats(token);
 
         if (!res.ok) {
+            console.log(res.data);
             alert("Erreur chargement candidats");
             return [];
         }
@@ -100,6 +103,60 @@ export default class CandidatController {
         return res.data;
     }
 
+    // =========================
+    // CREER CANDIDAT
+    // =========================
+    static async create(data) {
+
+        const token = AdminController.getToken();
+
+        const res = await CandidatModel.createCandidat(token, data);
+
+        if (!res.ok) {
+            alert(res.data.message || "Erreur création candidat");
+            return false;
+        }
+
+        return true;
+    }
+
+    // =========================
+    // MODIFIER CANDIDAT
+    // =========================
+    static async update(id, data) {
+
+        const token = AdminController.getToken();
+
+        const res = await CandidatModel.updateCandidat(token, id, data);
+
+        if (!res.ok) {
+            alert(res.data.message || "Erreur modification candidat");
+            return false;
+        }
+
+        return true;
+    }
+
+    // =========================
+    // SUPPRIMER CANDIDAT
+    // =========================
+    static async delete(id) {
+
+        const token = AdminController.getToken();
+
+        const res = await CandidatModel.deleteCandidat(token, id);
+
+        if (!res.ok) {
+            alert(res.data.message || "Erreur suppression candidat");
+            return false;
+        }
+
+        return true;
+    }
+
+    // =========================
+    // RECHERCHE CANDIDAT
+    // =========================
     static async search(query) {
 
         const token = AdminController.getToken();

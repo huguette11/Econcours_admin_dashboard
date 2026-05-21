@@ -177,7 +177,7 @@
     <?php include('modals/modal_candidat.php'); ?>
 
     <script type="module">
-        import CandidatController from "../controllers/CandidatController.js";
+        import CandidatController from "../Controllers/CandidatController.js";
 
         document.addEventListener("DOMContentLoaded", () => {
             CandidatController.initDataTable();

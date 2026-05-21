@@ -108,7 +108,7 @@
                                             </tr>
                                         </tfoot>
 
-                                        <tbody>
+                                        <tbody id="adminTableBody">
 
                                         </tbody>
                                     </table>
@@ -155,7 +155,9 @@
 
     <?php include('modals/modal_admin.php'); ?>
 
-
+    <script type="module"
+    src="../pages/assets/js/admin.js">
+    </script>
 
 
 
