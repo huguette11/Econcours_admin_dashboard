@@ -129,7 +129,7 @@
                                                 <th class="text-center">Supprimer</th>
                                         </tfoot>
 
-                                        <tbody>
+                                        <tbody id="candidatTableBody">
 
                                         </tbody>
                                     </table>
@@ -176,7 +176,13 @@
 
     <?php include('modals/modal_candidat.php'); ?>
 
+    <script type="module">
+        import CandidatController from "../controllers/CandidatController.js";
 
+        document.addEventListener("DOMContentLoaded", () => {
+            CandidatController.initDataTable();
+        });
+    </script>
 
 
 
