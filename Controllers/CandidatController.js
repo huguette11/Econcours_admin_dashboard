@@ -5,16 +5,18 @@ import AdminController from "./AdminController.js";
 
 export default class CandidatController {
 
+<<<<<<< HEAD
     // =========================
     // CHARGER TOUS LES CANDIDATS
     // =========================
+=======
+>>>>>>> 16e8206a582cfa67423733099a87e577f0430b07
     static async getAll() {
 
         const token = AdminController.getToken();
 
         if (!token) {
-            window.location.href = "../login.php";
-            return [];
+            console.warn("Aucun token admin");
         }
 
         const res = await CandidatModel.getAllCandidats(token);
@@ -25,12 +27,74 @@ export default class CandidatController {
             return [];
         }
 
-        return res.data;
+
+
+        return res.data.candidat || [];
     }
 
-    // =========================
-    // DETAIL CANDIDAT
-    // =========================
+    static async initDataTable() {
+
+        const tbody = document.getElementById("candidatTableBody");
+
+        if (!tbody) {
+            console.error("tbody introuvable");
+            return;
+        }
+
+        const data = await this.getAll();
+
+        console.log("DATA API :", data);
+
+        const candidats = data;
+
+        console.log("LISTE CANDIDATS :", candidats);
+
+        tbody.innerHTML = "";
+
+        candidats.forEach((item, index) => {
+
+            const candidat = item;
+
+            tbody.innerHTML += `
+<tr>
+    <td class="text-center">${index + 1}</td>
+    <td class="text-center">${candidat.nom}</td>
+    <td class="text-center">${candidat.prenom}</td>
+    <td class="text-center">${candidat.nom_jeune_fille}</td>
+    <td class="text-center">${candidat.sexe}</td>
+    <td class="text-center">${candidat.date_naissance}</td>
+    <td class="text-center">${candidat.lieu_naissance}</td>
+    <td class="text-center">${candidat.pays_naissance}</td>
+    <td class="text-center">${candidat.numero_cnib}</td>
+    <td class="text-center">${candidat.date_delivrance}</td>
+    <td class="text-center">${candidat.telephone}</td>
+    <td class="text-center">${candidat.email}</td>
+    <td class="text-center">${candidat.emploi}</td>
+    <td class="text-center">${candidat.matricule}</td>
+    <td class="text-center">${candidat.ministere}</td>
+    <td class="text-center">${candidat.type_candidat}</td>
+
+    <td class="text-center">
+        <button class="btn btn-warning btn-sm">
+            <i class="fa fa-edit"></i>
+        </button>
+    </td>
+
+    <td class="text-center">
+        <button class="btn btn-danger btn-sm">
+            <i class="fa fa-trash"></i>
+        </button>
+    </td>
+        `;
+        });
+
+        $('#dataTable').DataTable({
+            destroy: true,
+            pageLength: 10
+        });
+    }
+
+
     static async getDetail(id) {
 
         const token = AdminController.getToken();

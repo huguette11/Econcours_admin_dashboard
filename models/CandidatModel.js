@@ -3,8 +3,8 @@ const API_URL = "http://localhost:4000/api/admin";
 
 export default class CandidatModel {
 
-    static async getAllCandidats(token, page = 1) {
-        const res = await fetch(`${API_URL}/candidats?page=${page}`, {
+    static async getAllCandidats(token) {
+        const res = await fetch(`${API_URL}/candidats`, {
             headers: {
                 "Authorization": "Bearer " + token
             }
