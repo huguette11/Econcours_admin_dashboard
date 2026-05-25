@@ -3,9 +3,9 @@ import AdminController from "./AdminController.js";
 
 export default class ConcoursController {
 
-    // =========================
-    // RECUPERER TOUS LES CONCOURS
-    // =========================
+    // =========================================
+    // GET ALL
+    // =========================================
     static async getAll(page = 1) {
 
         const token = AdminController.getToken();
@@ -18,6 +18,7 @@ export default class ConcoursController {
         const res = await ConcoursModel.getAllConcours(token, page);
 
         console.log("REPONSE API :", res);
+        console.log("NOMBRE :", res.data.data.length);
 
         if (!res.ok) {
             alert("Erreur chargement concours");
@@ -27,23 +28,20 @@ export default class ConcoursController {
         return res.data;
     }
 
-    // =========================
+    // =========================================
     // DATATABLE
-    // =========================
+    // =========================================
     static async initDataTable() {
 
         const tbody = document.getElementById("concoursTableBody");
 
         if (!tbody) {
-            console.error("tbody introuvable");
+            console.error("tbody concours introuvable");
             return;
         }
 
         const response = await this.getAll();
 
-        console.log("CONCOURS :", response);
-
-        // API = { page, total, data: [] }
         const concours = response.data || [];
 
         console.log("LISTE CONCOURS :", concours);
@@ -84,11 +82,11 @@ export default class ConcoursController {
                     </td>
 
                     <td class="text-center">
-                        ${item.date_debut || ""}
+                        ${item.date_debut?.split("T")[0] || ""}
                     </td>
 
                     <td class="text-center">
-                        ${item.date_fin || ""}
+                        ${item.date_fin?.split("T")[0] || ""}
                     </td>
 
                     <td class="text-center">
@@ -97,7 +95,7 @@ export default class ConcoursController {
 
                     <td class="text-center">
                         <button 
-                            class="btn btn-warning btn-sm"
+                            class="btn btn-warning btn-sm btn-edit"
                             data-id="${item.id_concours}"
                         >
                             <i class="fa fa-edit"></i>
@@ -106,7 +104,7 @@ export default class ConcoursController {
 
                     <td class="text-center">
                         <button 
-                            class="btn btn-danger btn-sm"
+                            class="btn btn-danger btn-sm btn-delete"
                             data-id="${item.id_concours}"
                         >
                             <i class="fa fa-trash"></i>
@@ -117,15 +115,101 @@ export default class ConcoursController {
             `;
         });
 
+        // Destroy ancienne DataTable
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().destroy();
+        }
+
+        // Nouvelle DataTable
         $('#dataTable').DataTable({
             destroy: true,
-            pageLength: 10
+            responsive: true,
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+            searching: true,
+            ordering: true,
+            info: true
         });
+
+        // EVENTS
+        this.initDeleteButtons();
+        this.initEditButtons();
     }
 
-    // =========================
-    // DETAIL CONCOURS
-    // =========================
+    // =========================================
+    // AJOUT
+    // =========================================
+    static async create(data) {
+        console.log("DATA ENVOYEE :", data);
+
+        const token = AdminController.getToken();
+
+        const res = await ConcoursModel.createConcours(token, data);
+
+        console.log("CREATE :", res);
+
+        if (!res.ok) {
+            alert(res.data.message || "Erreur création");
+            return false;
+        }
+
+        alert("Concours ajouté");
+
+        await this.initDataTable();
+
+        return true;
+    }
+
+    // =========================================
+    // MODIFICATION
+    // =========================================
+    static async update(id, data) {
+
+        const token = AdminController.getToken();
+
+        const res = await ConcoursModel.updateConcours(token, id, data);
+
+        console.log("UPDATE :", res);
+
+        if (!res.ok) {
+            alert(res.data.message || "Erreur modification");
+            return false;
+        }
+
+        alert("Concours modifié");
+
+        await this.initDataTable();
+
+        return true;
+    }
+
+    // =========================================
+    // SUPPRESSION
+    // =========================================
+    static async delete(id) {
+
+        const token = AdminController.getToken();
+
+        const res = await ConcoursModel.deleteConcours(token, id);
+
+        console.log("DELETE :", res);
+
+        if (!res.ok) {
+            alert(res.data.message || "Erreur suppression");
+            return false;
+        }
+
+        alert("Concours supprimé");
+
+        await this.initDataTable();
+
+        return true;
+    }
+
+    // =========================================
+    // DETAIL
+    // =========================================
     static async getDetail(id) {
 
         const token = AdminController.getToken();
@@ -140,60 +224,58 @@ export default class ConcoursController {
         return res.data;
     }
 
-    // =========================
-    // CREER CONCOURS
-    // =========================
-    static async create(data) {
+    // =========================================
+    // DELETE BUTTONS
+    // =========================================
+    static initDeleteButtons() {
 
-        const token = AdminController.getToken();
+        const buttons = document.querySelectorAll(".btn-delete");
 
-        const res = await ConcoursModel.createConcours(token, data);
+        buttons.forEach((btn) => {
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur création");
-            return false;
-        }
+            btn.addEventListener("click", async () => {
 
-        return true;
+                const id = btn.dataset.id;
+
+                const confirmDelete = confirm(
+                    "Voulez-vous supprimer ce concours ?"
+                );
+
+                if (!confirmDelete) return;
+
+                await this.delete(id);
+            });
+        });
     }
 
-    // =========================
-    // MODIFIER CONCOURS
-    // =========================
-    static async update(id, data) {
+    // =========================================
+    // EDIT BUTTONS
+    // =========================================
+    static initEditButtons() {
 
-        const token = AdminController.getToken();
+        const buttons = document.querySelectorAll(".btn-edit");
 
-        const res = await ConcoursModel.updateConcours(token, id, data);
+        buttons.forEach((btn) => {
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur modification");
-            return false;
-        }
+            btn.addEventListener("click", async () => {
 
-        return true;
+                const id = btn.dataset.id;
+
+                const concours = await this.getDetail(id);
+
+                console.log("DETAIL :", concours);
+
+                // EXEMPLE
+                // remplir modal ici
+
+                alert("Modification concours ID : " + id);
+            });
+        });
     }
 
-    // =========================
-    // SUPPRIMER CONCOURS
-    // =========================
-    static async delete(id) {
-
-        const token = AdminController.getToken();
-
-        const res = await ConcoursModel.deleteConcours(token, id);
-
-        if (!res.ok) {
-            alert(res.data.message || "Erreur suppression");
-            return false;
-        }
-
-        return true;
-    }
-
-    // =========================
-    // RECHERCHE
-    // =========================
+    // =========================================
+    // SEARCH
+    // =========================================
     static async search(query) {
 
         const token = AdminController.getToken();
@@ -207,9 +289,9 @@ export default class ConcoursController {
         return res.data;
     }
 
-    // =========================
-    // CHANGER STATUT
-    // =========================
+    // =========================================
+    // SWITCH STATUS
+    // =========================================
     static async switchStatus(id) {
 
         const token = AdminController.getToken();
@@ -220,6 +302,8 @@ export default class ConcoursController {
             alert("Erreur changement statut");
             return false;
         }
+
+        await this.initDataTable();
 
         return true;
     }
