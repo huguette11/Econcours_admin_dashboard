@@ -18,8 +18,28 @@ export default class CandidatModel {
         };
     }
 
-    static async getDetailCandidat(token, id) {
-        const res = await fetch(`${API_URL}/candidat/detail/${id}`, {
+    static async createCandidat(token, data) {
+        const res = await fetch(`${API_URL}/candidats/create`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
+
+    static async DeleteCandidat(token, id_candidat) {
+
+        const res = await fetch(`${API_URL}/candidats/delete/${id_candidat}`, {
+            method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -33,8 +53,32 @@ export default class CandidatModel {
         };
     }
 
-    static async searchCandidat(token, query) {
-        const res = await fetch(`${API_URL}/candidats/search?q=${query}`, {
+    static async updateCandidat(token, id_candidat, data) {
+
+        const res = await fetch(
+            `${API_URL}/candidats/update-candidat/${id_candidat}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(data)
+            }
+        );
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+
+    }
+
+
+    static async getDetailCandidat(token, id_candidat) {
+        const res = await fetch(`${API_URL}/candidats/detail/${id_candidat}`, {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -47,4 +91,5 @@ export default class CandidatModel {
             data: result
         };
     }
+
 }

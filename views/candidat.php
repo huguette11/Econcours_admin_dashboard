@@ -90,21 +90,22 @@
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom</th>
                                                 <th class="text-center">Prénom(s)</th>
-                                                <th class="text-center">Nom de jeune fille</th>
-                                                <th class="text-center">Sexe</th>
+                                                <!-- <th class="text-center">Nom de jeune fille</th> -->
+                                                <!-- <th class="text-center">Sexe</th>
                                                 <th class="text-center">Date de naissance</th>
                                                 <th class="text-center">Lieu de naissance</th>
-                                                <th class="text-center">Pays de naissance</th>
+                                                <th class="text-center">Pays de naissance</th> -->
                                                 <th class="text-center">Numéro CNIB/ Pièce d'identité</th>
-                                                <th class="text-center">Date de délivrance</th>
+                                                <!-- <th class="text-center">Date de délivrance</th> -->
                                                 <th class="text-center">Téléphone</th>
                                                 <th class="text-center">Email</th>
-                                                <th class="text-center">Emploi</th>
+                                                <!-- <th class="text-center">Emploi</th>
                                                 <th class="text-center">Matricule</th>
-                                                <th class="text-center">Ministère</th>
+                                                <th class="text-center">Ministère</th> -->
                                                 <th class="text-center">Type de candidat</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
+                                                <th class="text-center">Voir détails</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
@@ -112,21 +113,22 @@
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom</th>
                                                 <th class="text-center">Prénom(s)</th>
-                                                <th class="text-center">Nom de jeune fille</th>
-                                                <th class="text-center">Sexe</th>
+                                                <!-- <th class="text-center">Nom de jeune fille</th> -->
+                                                <!-- <th class="text-center">Sexe</th>
                                                 <th class="text-center">Date de naissance</th>
                                                 <th class="text-center">Lieu de naissance</th>
-                                                <th class="text-center">Pays de naissance</th>
+                                                <th class="text-center">Pays de naissance</th> -->
                                                 <th class="text-center">Numéro CNIB/ Pièce d'identité</th>
-                                                <th class="text-center">Date de délivrance</th>
+                                                <!-- <th class="text-center">Date de délivrance</th> -->
                                                 <th class="text-center">Téléphone</th>
                                                 <th class="text-center">Email</th>
-                                                <th class="text-center">Emploi</th>
+                                                <!-- <th class="text-center">Emploi</th>
                                                 <th class="text-center">Matricule</th>
-                                                <th class="text-center">Ministère</th>
+                                                <th class="text-center">Ministère</th> -->
                                                 <th class="text-center">Type de candidat</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
+                                                <th class="text-center">Voir détails</th>
                                         </tfoot>
 
                                         <tbody id="candidatTableBody">
@@ -175,12 +177,18 @@
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <?php include('modals/modal_candidat.php'); ?>
+    <?php include('modals/modal_detail.php'); ?>
 
     <script type="module">
         import CandidatController from "../Controllers/CandidatController.js";
 
         document.addEventListener("DOMContentLoaded", () => {
             CandidatController.initDataTable();
+            CandidatController.registerCandidat();
+            CandidatController.initDeleteButtons();
+            CandidatController.initEditModal();
+            CandidatController.initEditSubmit();
+            CandidatController.initDetails();
         });
     </script>
 

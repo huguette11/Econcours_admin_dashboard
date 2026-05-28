@@ -107,16 +107,6 @@
                                         <tbody>
 
                                         </tbody>
-                                                <th class="text-center">Date de début</th>
-                                                <th class="text-center">Date de fin</th>
-                                                <th class="text-center">Statut du concours</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
-                                        </tfoot>
-
-                                        <tbody>
-
-                                        </tbody>
                                     </table>
                                 </div>
                                 <!-- Card footer -->
@@ -160,6 +150,18 @@
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
     <?php include('modals/modal_categorie.php'); ?>
+    <script type="module">
+
+    import CategorieController from "../controllers/CategorieController.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+        CategorieController.initDataTable();
+        CategorieController.initCreateCategorie();
+        CategorieController.initEditButtons();
+        CategorieController.initUpdateCategorie();
+    });
+
+</script>
 
 
 

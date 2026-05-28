@@ -3,72 +3,213 @@ import AdminController from "./AdminController.js";
 
 export default class CategorieController {
 
-    static async getAll() {
+    static async initDataTable() {
 
         const token = AdminController.getToken();
 
-        const res = await CategorieModel.getCategories(token);
+        const res = await CategorieModel.getAllCategories(token);
+
+        console.log("CATEGORIES :", res);
 
         if (!res.ok) {
-            alert("Erreur chargement catégories");
-            return [];
+
+            Swal.fire(
+                "Erreur",
+                res.data.error || "Impossible de charger les catégories",
+                "error"
+            );
+
+            return;
         }
 
-        return res.data;
-    }
+        const categories = res.data.data;
 
-    static async getCategorieConcours() {
+        const tbody = document.querySelector("#dataTable tbody");
 
-        const token = AdminController.getToken();
+        tbody.innerHTML = "";
 
-        const res = await CategorieModel.getCategorieConcours(token);
+        categories.forEach((categorie, index) => {
 
-        if (!res.ok) {
-            return [];
+            tbody.innerHTML += `
+            
+                <tr>
+
+                    <td class="text-center">${index + 1}</td>
+
+                    <td class="text-center">
+                        ${categorie.libelle}
+                    </td>
+
+                    <td class="text-center">
+                        ${categorie.description || "-"}
+                    </td>
+
+                    <td class="text-center">
+
+                        <button 
+                            class="btn btn-warning btn-sm edit-categorie"
+                            data-id="${categorie.id}"
+                            data-libelle="${categorie.libelle}"
+                            data-description="${categorie.description || ''}"
+                        >
+                            <i class="fa fa-edit"></i>
+                        </button>
+
+                    </td>
+
+                    <td class="text-center">
+
+                        <button 
+                            class="btn btn-danger btn-sm delete-categorie"
+                            data-id="${categorie.id}"
+                        >
+                            <i class="fa fa-trash"></i>
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+        });
+
+        if ($.fn.DataTable.isDataTable("#dataTable")) {
+            $('#dataTable').DataTable().destroy();
         }
 
-        return res.data;
+        $('#dataTable').DataTable({
+            pageLength: 10,
+            responsive: true
+        });
     }
 
-    static async create(data) {
+    static initCreateCategorie() {
 
-        const token = AdminController.getToken();
+        const form = document.getElementById("formAjoutCategorie");
 
-        const res = await CategorieModel.createCategorie(token, data);
+        if (!form) return;
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur création catégorie");
-            return false;
-        }
+        form.addEventListener("submit", async (e) => {
 
-        return true;
+            e.preventDefault();
+
+            const token = AdminController.getToken();
+
+            const data = {
+                libelle: document.getElementById("libelle").value,
+                description: document.getElementById("description").value
+            };
+
+            const res = await CategorieModel.createCategorie(token, data);
+
+            if (!res.ok) {
+
+                Swal.fire(
+                    "Erreur",
+                    res.data.error || res.data.message || "Erreur création catégorie",
+                    "error"
+                );
+
+                return;
+            }
+
+            Swal.fire(
+                "Succès",
+                res.data.message,
+                "success"
+            );
+
+            form.reset();
+
+            $("#ajouter_categorie").modal("hide");
+
+            this.initDataTable();
+        });
     }
 
-    static async update(id, data) {
+    static initEditButtons() {
 
-        const token = AdminController.getToken();
+        document.addEventListener("click", (e) => {
 
-        const res = await CategorieModel.updateCategorie(token, id, data);
+            const btn =
+                e.target.closest(".edit-categorie");
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur modification catégorie");
-            return false;
-        }
+            if (!btn) return;
 
-        return true;
+            document.getElementById("id_categorie").value =
+                btn.dataset.id;
+
+            document.getElementById("libelle_modif").value =
+                btn.dataset.libelle;
+
+            document.getElementById("description_modif").value =
+                btn.dataset.description;
+
+            $("#modifier_categorie").modal("show");
+        });
     }
 
-    static async delete(id) {
+    static initUpdateCategorie() {
 
-        const token = AdminController.getToken();
+        const form =
+            document.getElementById(
+                "formModificationCategorie"
+            );
 
-        const res = await CategorieModel.deleteCategorie(token, id);
+        if (!form) return;
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur suppression catégorie");
-            return false;
-        }
+        form.addEventListener(
+            "submit",
+            async (e) => {
 
-        return true;
+                e.preventDefault();
+
+                const token =
+                    AdminController.getToken();
+
+                const id_categorie =
+                    document.getElementById("id_categorie").value;
+
+                const data = {
+                    libelle:
+                        document.getElementById("libelle_modif").value,
+
+                    description:
+                        document.getElementById("description_modif").value
+                };
+
+                console.log(data);
+
+                const res = await CategorieModel.updateCategorie(
+                    id_categorie,
+                    data,
+                    token
+                );
+
+                console.log(res);
+
+                if (!res.ok) {
+
+                    Swal.fire(
+                        "Erreur",
+                        res.data.error ||
+                        "Modification impossible",
+                        "error"
+                    );
+
+                    return;
+                }
+
+                Swal.fire(
+                    "Succès",
+                    res.data.message,
+                    "success"
+                );
+
+                $("#modifier_categorie").modal("hide");
+
+                this.initDataTable();
+            }
+        );
     }
+
 }

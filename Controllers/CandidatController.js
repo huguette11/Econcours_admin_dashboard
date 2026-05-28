@@ -11,9 +11,12 @@ export default class CandidatController {
 
         if (!token) {
             console.warn("Aucun token admin");
+            return [];
         }
 
         const res = await CandidatModel.getAllCandidats(token);
+
+        console.log("REPONSE API :", res);
 
         if (!res.ok) {
             console.log(res.data);
@@ -21,9 +24,22 @@ export default class CandidatController {
             return [];
         }
 
+        // CAS 1 : API retourne directement un tableau
+        if (Array.isArray(res.data)) {
+            return res.data;
+        }
 
+        // CAS 2 : API retourne { data: [...] }
+        if (Array.isArray(res.data.data)) {
+            return res.data.data;
+        }
 
-        return res.data.candidat || [];
+        // CAS 3 : API retourne { candidat: [...] }
+        if (Array.isArray(res.data.candidat)) {
+            return res.data.candidat;
+        }
+
+        return [];
     }
 
     static async initDataTable() {
@@ -54,31 +70,44 @@ export default class CandidatController {
     <td class="text-center">${index + 1}</td>
     <td class="text-center">${candidat.nom}</td>
     <td class="text-center">${candidat.prenom}</td>
-    <td class="text-center">${candidat.nom_jeune_fille}</td>
-    <td class="text-center">${candidat.sexe}</td>
-    <td class="text-center">${candidat.date_naissance}</td>
-    <td class="text-center">${candidat.lieu_naissance}</td>
-    <td class="text-center">${candidat.pays_naissance}</td>
     <td class="text-center">${candidat.numero_cnib}</td>
-    <td class="text-center">${candidat.date_delivrance}</td>
     <td class="text-center">${candidat.telephone}</td>
     <td class="text-center">${candidat.email}</td>
-    <td class="text-center">${candidat.emploi}</td>
-    <td class="text-center">${candidat.matricule}</td>
-    <td class="text-center">${candidat.ministere}</td>
     <td class="text-center">${candidat.type_candidat}</td>
 
     <td class="text-center">
-        <button class="btn btn-warning btn-sm">
-            <i class="fa fa-edit"></i>
-        </button>
+       <button class="btn btn-warning btn-sm edit-candidat"
+    data-id="${candidat.id_candidat}"
+    data-email="${candidat.email || ''}"
+    data-nom-jeune-fille="${candidat.nom_jeune_fille || ''}"
+    data-emploi="${candidat.emploi || ''}"
+    data-ministere="${candidat.ministere || ''}"
+    data-matricule="${candidat.matricule || ''}"
+>
+    <i class="fa fa-edit"></i>
+</button>
+    </td>
+
+<td class="text-center">
+    <button
+        class="btn btn-danger btn-sm delete-candidat"
+        data-id="${candidat.id_candidat}"
+    >
+        <i class="fa fa-trash"></i>
+    </button>
     </td>
 
     <td class="text-center">
-        <button class="btn btn-danger btn-sm">
-            <i class="fa fa-trash"></i>
-        </button>
+
+    <button
+        class="btn btn-info btn-sm detail-candidat"
+        data-id="${candidat.id_candidat}"
+    >
+        <i class="fa fa-eye"></i>
+    </button>
+
     </td>
+    </tr>
         `;
         });
 
@@ -88,85 +117,355 @@ export default class CandidatController {
         });
     }
 
+    static initDeleteButtons() {
 
-    static async getDetail(id) {
+        document.addEventListener("click", async (e) => {
 
-        const token = AdminController.getToken();
+            const button = e.target.closest(".delete-candidat");
 
-        const res = await CandidatModel.getDetailCandidat(token, id);
+            if (!button) return;
 
-        if (!res.ok) {
-            alert("Erreur détail candidat");
-            return null;
-        }
+            const id = button.dataset.id;
 
-        return res.data;
+            const confirm = await Swal.fire({
+                title: "Supprimer ?",
+                text: "Cette action est irréversible",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui",
+                cancelButtonText: "Annuler"
+            });
+
+            if (!confirm.isConfirmed) return;
+
+            const token = AdminController.getToken();
+
+            const res = await CandidatModel.DeleteCandidat(token, id);
+
+            console.log(res);
+
+            if (!res?.ok) {
+                Swal.fire("Erreur", "Suppression impossible", "error");
+                return;
+            }
+
+            Swal.fire("Succès", res.data?.message || "OK", "success");
+
+            // reload tableau
+            await this.initDataTable();
+
+        });
+    }
+
+    static initEditModal() {
+
+        document.addEventListener("click", (e) => {
+
+            const btn = e.target.closest(".edit-candidat");
+            if (!btn) return;
+
+            // remplir modal
+            document.getElementById("id_candidat").value = btn.dataset.id;
+            document.getElementById("email_modif").value = btn.dataset.email;
+            document.getElementById("nom_jeune_fille_modif").value = btn.dataset.nomJeuneFille;
+            document.getElementById("emploi_modif").value = btn.dataset.emploi;
+            document.getElementById("ministere_modif").value = btn.dataset.ministere;
+            document.getElementById("matricule_modif").value = btn.dataset.matricule;
+
+            // ouvrir modal bootstrap
+            $("#modifier_candidat").modal("show");
+
+        });
+
+    }
+
+    static initEditSubmit() {
+
+        document.querySelector("#modifier_candidat form")
+            .addEventListener("submit", async (e) => {
+
+                e.preventDefault();
+
+                const id = document.getElementById("id_candidat").value;
+
+                const data = {
+                    email: document.getElementById("email_modif").value,
+                    nom_jeune_fille: document.getElementById("nom_jeune_fille_modif").value,
+                    mot_de_passe: document.getElementById("mot_de_passe_modif").value,
+                    emploi: document.getElementById("emploi_modif").value,
+                    ministere: document.getElementById("ministere_modif").value,
+                    matricule: document.getElementById("matricule_modif").value,
+                };
+
+                const token = AdminController.getToken();
+
+                const res = await CandidatModel.updateCandidat(token, id, data);
+
+                if (!res.ok) {
+
+                    Swal.fire(
+                        "Erreur",
+                        res.data?.error || "Modification échouée",
+                        "error"
+                    );
+                    return;
+
+                }
+
+                Swal.fire(
+                    "Succès",
+                    res.data?.message || "Candidat modifié",
+                    "success"
+                );
+
+                // fermer modal
+                $("#modifier_candidat").modal("hide");
+
+                // refresh datatable SANS reload page
+                await CandidatController.initDataTable();
+
+            });
+
+    }
+
+
+    // static async getDetail(id) {
+
+    //     const token = AdminController.getToken();
+
+    //     const res = await CandidatModel.getDetailCandidat(token, id);
+
+    //     if (!res.ok) {
+    //         alert("Erreur détail candidat");
+    //         return null;
+    //     }
+
+    //     return res.data;
+    // }
+
+    static initDetails() {
+
+        document.addEventListener("click", async (e) => {
+
+            const btn = e.target.closest(".detail-candidat");
+
+            if (!btn) return;
+
+            const id = btn.dataset.id;
+
+            const token = AdminController.getToken();
+
+            const res = await CandidatModel.getDetailCandidat(token, id);
+
+            console.log("DETAIL RESPONSE :", res);
+
+            if (!res.ok) {
+
+                Swal.fire(
+                    "Erreur",
+                    res.data?.error || "Impossible de charger",
+                    "error"
+                );
+
+                return;
+
+            }
+
+            // IMPORTANT
+            const data = res.data.resp[0];
+
+            const candidat = data.candidat;
+            const inscriptions = data.inscription;
+
+            let concoursHTML = "";
+
+            // verifier inscriptions
+            if (inscriptions.length === 0) {
+
+                concoursHTML = `
+<tr>
+<td colspan="5" class="text-center">
+Aucune inscription
+</td>
+</tr>
+`;
+
+            } else {
+
+                inscriptions.forEach((inscription) => {
+
+                    concoursHTML += `
+
+<tr>
+
+<td>
+${inscription.concours.nom}
+</td>
+
+<td>
+${inscription.concours.type}
+</td>
+
+<td>
+${inscription.concours.categorie.libelle}
+</td>
+
+<td>
+${inscription.paiement?.statut_paiement || 'NON PAYE'}
+</td>
+
+<td>
+${new Date(
+                        inscription.date_inscription
+                    ).toLocaleDateString()}
+</td>
+
+</tr>
+
+`;
+
+                });
+
+            }
+
+            document.getElementById("detailContent").innerHTML = `
+
+<div class="row">
+
+<div class="col-md-6">
+
+<p>
+<strong>Nom :</strong>
+${candidat.nom}
+</p>
+
+<p>
+<strong>Prénom :</strong>
+${candidat.prenom}
+</p>
+
+<p>
+<strong>Email :</strong>
+${candidat.email || '-'}
+</p>
+
+<p>
+<strong>Téléphone :</strong>
+${candidat.telephone}
+</p>
+
+<p>
+<strong>Sexe :</strong>
+${candidat.sexe}
+</p>
+
+</div>
+
+<div class="col-md-6">
+
+<p>
+<strong>Type :</strong>
+${candidat.type_candidat}
+</p>
+
+<p>
+<strong>Statut :</strong>
+${candidat.statut_compte}
+</p>
+
+<p>
+<strong>CNIB :</strong>
+${candidat.numero_cnib}
+</p>
+
+<p>
+<strong>Lieu naissance :</strong>
+${candidat.lieu_naissance}
+</p>
+
+<p>
+<strong>Pays :</strong>
+${candidat.pays_naissance}
+</p>
+
+</div>
+
+</div>
+
+<hr>
+
+<h5>
+Concours inscrits
+</h5>
+
+<table class="table table-bordered">
+
+<thead>
+
+<tr>
+<th>Concours</th>
+<th>Type</th>
+<th>Catégorie</th>
+<th>Paiement</th>
+<th>Date inscription</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+${concoursHTML}
+
+</tbody>
+
+</table>
+`;
+
+            $("#detailCandidatModal").modal("show");
+
+        });
+
     }
 
     // =========================
     // CREER CANDIDAT
     // =========================
-    static async create(data) {
 
-        const token = AdminController.getToken();
+    static async registerCandidat() {
 
-        const res = await CandidatModel.createCandidat(token, data);
+        const form = document.getElementById("formCandidat");
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur création candidat");
-            return false;
-        }
+        if (!form) return;
 
-        return true;
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const token = AdminController.getToken();
+
+            const formData = new FormData(form);
+
+            const data = Object.fromEntries(formData.entries());
+
+            console.log("DATA ENVOYÉE :", data);
+
+            const res = await CandidatModel.createCandidat(token, data);
+
+            if (!res.ok) {
+                Swal.fire("Erreur", res.data.error || "Erreur création", "error");
+                return;
+            }
+
+            alert("Succès", res.data.message, "success");
+
+            // fermer modal
+            $('#ajouter_candidat').modal('hide');
+
+            // reset form
+            form.reset();
+
+            // reload datatable
+            CandidatController.initDataTable();
+        });
     }
 
-    // =========================
-    // MODIFIER CANDIDAT
-    // =========================
-    static async update(id, data) {
-
-        const token = AdminController.getToken();
-
-        const res = await CandidatModel.updateCandidat(token, id, data);
-
-        if (!res.ok) {
-            alert(res.data.message || "Erreur modification candidat");
-            return false;
-        }
-
-        return true;
-    }
-
-    // =========================
-    // SUPPRIMER CANDIDAT
-    // =========================
-    static async delete(id) {
-
-        const token = AdminController.getToken();
-
-        const res = await CandidatModel.deleteCandidat(token, id);
-
-        if (!res.ok) {
-            alert(res.data.message || "Erreur suppression candidat");
-            return false;
-        }
-
-        return true;
-    }
-
-    // =========================
-    // RECHERCHE CANDIDAT
-    // =========================
-    static async search(query) {
-
-        const token = AdminController.getToken();
-
-        const res = await CandidatModel.searchCandidat(token, query);
-
-        if (!res.ok) {
-            return [];
-        }
-
-        return res.data;
-    }
 }
