@@ -1,173 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>Liste des concours</title>
 
-    <!-- Custom fonts for this template -->
-    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    <!-- Fonts -->
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
+    <!-- CSS -->
     <link href="../css/sb-admin-2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../pages/assets/css/style.css">
-
-    <!-- Custom styles for this page -->
     <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <?php include("inclusions_haut.php") ?>
+
 </head>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
     <div id="wrapper">
 
+        <!-- Sidebar -->
         <?php include("menu_admin.php") ?>
 
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
             <div id="content">
+
+                <!-- Topbar -->
+                <?php include("entete.php") ?>
+
                 <div class="container-fluid">
-                    <!-- Topbar -->
-                    <?php include("entete.php") ?>
 
-                    <!-- End of Topbar -->
+                    <!-- HEADER -->
+                    <div class=" align-items-center justify-content-between mb-4">
 
-                    <div class="header">
-                        <div class="container-fluid">
-                            <div class="header-body">
-                                <div class="row align-items-center py-4">
-                                    <div class="col-lg-6 col-7">
-                                        <!-- <h6 class="h2 text-white d-inline-block mb-0">Utilisateur</h6> -->
-                                        <!-- <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                            <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="index.php">BIMMO-2 ADMIN</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">Gestion des utilisateurs</li>
-                                        </ol>
-                                    </nav> -->
-                                    </div>
-                                    <div class="col-lg-6 col-5 text-right">
+                        <button
+                            type="button"
+                            class="btn btn-primary shadow-sm"
+                            data-toggle="modal"
+                            data-target="#ajouter_concours">
 
-                                    </div>
-                                    <div class="text-left">
-                                        <div class="col-md-12">
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#ajouter_concours">Ajouter un concours <i
-                                                    class="fa  fa-plus "></i></button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <i class="fas fa-plus fa-sm text-white-50"></i>
+                            Ajouter un concours
+                        </button>
 
-                            </div>
-                        </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col">
-                            <div class="card">
-                                <!-- Card header -->
-                                <div class="card-header border-0">
-                                    <h3 class="mb-0">Liste des concours</h3>
-                                </div>
-                                <!-- Light table -->
-                                <div class="table-responsive">
-                                    <table class="table" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-center">N°</th>
-                                                <th class="text-center">Nom</th>
-                                                <th class="text-center">Type de concours</th>
-                                                <th class="text-center">Description</th>
-                                                <th class="text-center">Frais d'inscription</th>
-                                                <th class="text-center">Nombre de postes</th>
-                                                <th class="text-center">Année</th>
-                                                <th class="text-center">Date de début</th>
-                                                <th class="text-center">Date de fin</th>
-                                                <th class="text-center">Statut du concours</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
-                                            </tr>
-                                        </thead>
-                                        <tfoot>
-                                            <tr>
-                                                <th class="text-center">N°</th>
-                                                <th class="text-center">Nom</th>
-                                                <th class="text-center">Type de concours</th>
-                                                <th class="text-center">Description</th>
-                                                <th class="text-center">Frais d'inscription</th>
-                                                <th class="text-center">Nombre de postes</th>
-                                                <th class="text-center">Année</th>
-                                                <th class="text-center">Date de début</th>
-                                                <th class="text-center">Date de fin</th>
-                                                <th class="text-center">Statut du concours</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
-                                        </tfoot>
+                    <!-- TABLE -->
+                    <div class="card shadow mb-4">
 
-                                        <tbody id="concoursTableBody">
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!-- Card footer -->
-                                <div class="card-footer py-4">
-
-                                </div>
-                            </div>
+                        <div class="card-header py-3">
+                            <h3 class="mb-0 ">
+                                Liste des concours
+                            </h3>
                         </div>
+
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+
+                                <table
+                                    class="table table-bordered table-hover"
+                                    id="dataTable"
+                                    width="100%"
+                                    cellspacing="0">
+
+                                    <thead class="thead-light">
+
+                                        <tr>
+
+                                            <th class="text-center">N°</th>
+
+                                            <th class="text-center">
+                                                Nom
+                                            </th>
+
+                                            <th class="text-center">
+                                                Type
+                                            </th>
+
+                                            <th class="text-center">
+                                                Catégorie
+                                            </th>
+
+                                            <th class="text-center">
+                                                Frais
+                                            </th>
+
+                                            <th class="text-center">
+                                                Postes
+                                            </th>
+
+                                            <th class="text-center">
+                                                Année
+                                            </th>
+
+                                            <th class="text-center">
+                                                Début
+                                            </th>
+
+                                            <th class="text-center">
+                                                Fin
+                                            </th>
+
+                                            <th class="text-center">
+                                                Statut
+                                            </th>
+
+                                            <th class="text-center">
+                                                Modifier
+                                            </th>
+
+                                            <th class="text-center">
+                                                Supprimer
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody id="concoursTableBody">
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
                     </div>
-                    <!-- Footer -->
-                    <?php include("footer.php") ?>
+
                 </div>
+
             </div>
 
+            <!-- Footer -->
+            <?php include("footer.php") ?>
+
         </div>
-        <!-- End of Main Content -->
 
     </div>
-    <!-- End of Content Wrapper -->
 
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
+    <!-- Scroll -->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Bootstrap core JavaScript-->
+    <!-- JS -->
     <script src="../vendor/jquery/jquery.min.js"></script>
+
     <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
     <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
     <script src="../js/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
+    <!-- DataTables -->
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
+
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <?php include('modals/modal_concours.php'); ?>
+    <!-- Modal -->
+    <?php include("modals/modal_concours.php"); ?>
 
-    <script type="module" src="../pages/assets/js/concours.js"></script>
+    <!-- CONTROLLER -->
+    <script type="module">
 
+        import ConcoursController from "../Controllers/ConcoursController.js";
 
+        document.addEventListener("DOMContentLoaded", async () => {
 
+            await ConcoursController.initDataTable();
+
+        });
+
+    </script>
 
 </body>
 

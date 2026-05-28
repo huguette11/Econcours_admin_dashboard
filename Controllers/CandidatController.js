@@ -7,7 +7,7 @@ export default class CandidatController {
 
     static async getAll() {
 
-        const token = AdminController.getToken();
+    const token = AdminController.getToken();
 
         if (!token) {
             console.warn("Aucun token admin");
