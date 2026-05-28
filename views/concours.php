@@ -173,17 +173,51 @@
     <?php include("modals/modal_concours.php"); ?>
 
     <!-- CONTROLLER -->
-    <script type="module">
+<script type="module">
 
-        import ConcoursController from "../Controllers/ConcoursController.js";
+    import ConcoursController from "../Controllers/ConcoursController.js";
 
-        document.addEventListener("DOMContentLoaded", async () => {
+    document.addEventListener("DOMContentLoaded", async () => {
 
-            await ConcoursController.initDataTable();
+        await ConcoursController.initDataTable();
 
+        const form = document.getElementById("formConcours");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            const data = {
+                nom:               formData.get("nom"),
+                type:              formData.get("type"),
+                description:       formData.get("description"),
+                frais_inscription: parseInt(formData.get("frais_inscription")),
+                nombre_postes:     parseInt(formData.get("nombre_postes")),
+                annee:             parseInt(formData.get("annee")),
+                date_debut:        formData.get("date_debut"),
+                date_fin:          formData.get("date_fin"),
+                statut_concours:   formData.get("statut_concours"),
+                categorieId:       parseInt(formData.get("categorieId")),
+                centres:           formData.getAll("centres").map(Number)
+            };
+
+            console.log("DATA ENVOYEE :", data);
+
+            const success = await ConcoursController.create(data);
+
+            if (success) {
+                $("#ajouter_concours").modal("hide");
+                form.reset();
+            }
         });
 
-    </script>
+    });
+
+</script>
+
+
+
 
 </body>
 
