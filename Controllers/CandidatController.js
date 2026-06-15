@@ -1,13 +1,13 @@
-// Controllers/CandidatController.js
-
 import CandidatModel from "../models/CandidatModel.js";
+import CentreModel from "../models/CentreModel.js";
+import ConcoursModel from "../models/ConcoursModel.js";
 import AdminController from "./AdminController.js";
 
 export default class CandidatController {
 
     static async getAll() {
 
-    const token = AdminController.getToken();
+        const token = AdminController.getToken();
 
         if (!token) {
             console.warn("Aucun token admin");
@@ -222,7 +222,7 @@ export default class CandidatController {
                 $("#modifier_candidat").modal("hide");
 
                 // refresh datatable SANS reload page
-                await CandidatController.initDataTable();
+                await this.initDataTable();
 
             });
 
@@ -464,8 +464,7 @@ ${concoursHTML}
             form.reset();
 
             // reload datatable
-            CandidatController.initDataTable();
+            await this.initDataTable();
         });
     }
-
 }

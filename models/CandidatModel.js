@@ -4,7 +4,7 @@ const API_URL = "http://localhost:4000/api/admin";
 export default class CandidatModel {
 
     static async getAllCandidats(token) {
-        const res = await fetch(`${API_URL}/candidats`, {
+        const res = await fetch(`${API_URL}/candidats/all`, {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -83,6 +83,28 @@ export default class CandidatModel {
                 "Authorization": "Bearer " + token
             }
         });
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
+
+    static async inscrireConcours(token, data) {
+
+        const res = await fetch(
+            `${API_URL}/candidats/inscrire-concours`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(data)
+            }
+        );
 
         const result = await res.json();
 

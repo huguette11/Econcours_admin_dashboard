@@ -7,18 +7,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+
     <title>Liste des concours</title>
 
-    <!-- Fonts -->
-    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,800,900" rel="stylesheet">
+    <!-- Custom fonts for this template -->
+    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-    <!-- CSS -->
+    <!-- Custom styles for this template -->
     <link href="../css/sb-admin-2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../pages/assets/css/style.css">
+
+    <!-- Custom styles for this page -->
     <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <?php include("inclusions_haut.php") ?>
 
 </head>
@@ -92,15 +97,7 @@
                                             </th>
 
                                             <th class="text-center">
-                                                Frais
-                                            </th>
-
-                                            <th class="text-center">
                                                 Postes
-                                            </th>
-
-                                            <th class="text-center">
-                                                Année
                                             </th>
 
                                             <th class="text-center">
@@ -173,50 +170,23 @@
     <?php include("modals/modal_concours.php"); ?>
 
     <!-- CONTROLLER -->
-<script type="module">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="module">
+        import ConcoursController from "../Controllers/ConcoursController.js";
 
-    import ConcoursController from "../Controllers/ConcoursController.js";
+        document.addEventListener("DOMContentLoaded", async () => {
+            ConcoursController.getAll();
+            ConcoursController.initDataTable();
+            ConcoursController.initCreateConcours();
+            ConcoursController.initEditConcours();
+            ConcoursController.initDeleteConcours();
+            ConcoursController.initSwitchStatus();
+            ConcoursController.loadSelects();
+            ConcoursController.initSelect2();
+            // ConcoursController.loadCentres();
 
-    document.addEventListener("DOMContentLoaded", async () => {
-
-        await ConcoursController.initDataTable();
-
-        const form = document.getElementById("formConcours");
-
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(form);
-
-            const data = {
-                nom:               formData.get("nom"),
-                type:              formData.get("type"),
-                description:       formData.get("description"),
-                frais_inscription: parseInt(formData.get("frais_inscription")),
-                nombre_postes:     parseInt(formData.get("nombre_postes")),
-                annee:             parseInt(formData.get("annee")),
-                date_debut:        formData.get("date_debut"),
-                date_fin:          formData.get("date_fin"),
-                statut_concours:   formData.get("statut_concours"),
-                categorieId:       parseInt(formData.get("categorieId")),
-                centres:           formData.getAll("centres").map(Number)
-            };
-
-            console.log("DATA ENVOYEE :", data);
-
-            const success = await ConcoursController.create(data);
-
-            if (success) {
-                $("#ajouter_concours").modal("hide");
-                form.reset();
-            }
-        });
-
-    });
-
-</script>
-
-
+         });
+    </script>
 
 
 </body>

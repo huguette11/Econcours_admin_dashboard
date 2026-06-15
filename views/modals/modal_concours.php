@@ -90,30 +90,15 @@
 
                         <div class="col-md-6 mb-3">
                             <label>Catégorie</label>
-                            <select name="categorieId" class="form-control" required>
+                            <select name="categorieId" id="categorieId" class="form-control" required>
                                 <option value="">Sélectionnez</option>
-                                <option value="1">Fonction Publique</option>
-                                <option value="2">Militaire</option>
-                                <option value="3">Paramédical</option>
-                                <option value="4">Enseignement</option>
-                                <option value="5">Police Nationale</option>
-                                <option value="6">Douanes</option>
-                                <option value="7">Eaux et Forêts</option>
-                                <option value="8">Justice</option>
                             </select>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label>Centres <small class="text-muted">(Ctrl+clic pour sélectionner plusieurs)</small></label>
-                            <select name="centres" class="form-control" multiple required style="height: 150px;">
-                                <option value="1">Ouagadougou</option>
-                                <option value="2">Bobo-Dioulasso</option>
-                                <option value="3">Koudougou</option>
-                                <option value="4">Banfora</option>
-                                <option value="5">Ouahigouya</option>
-                                <option value="6">Dédougou</option>
-                                <option value="7">Fada N'Gourma</option>
-                                <option value="8">Tenkodogo</option>
+                            <select name="centres" id="centres" class="form-control" multiple required>
+                                <option value="">Sélectionnez</option>
                             </select>
                         </div>
 
@@ -125,6 +110,116 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                     <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="modifier_concours" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg" role="document">
+
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier un concours</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <!-- FORM -->
+            <form id="formUpdateConcours">
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="id_concours_modif">
+
+                    <!-- LIGNE 1 -->
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <label>Nom</label>
+                            <input type="text" id="nom_modif" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Type</label>
+                            <select id="type_modif" class="form-control">
+                                <option value="DIRECT">DIRECT</option>
+                                <option value="PROFESSIONNEL">PROFESSIONNEL</option>
+                                <option value="HANDICAPE">HANDICAPE</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Description</label>
+                            <textarea id="description_modif" class="form-control" rows="2"></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- LIGNE 2 -->
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <label>Frais inscription</label>
+                            <input type="number" id="frais_inscription_modif" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Nombre de postes</label>
+                            <input type="number" id="nombre_postes_modif" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Année</label>
+                            <input type="number" id="annee_modif" class="form-control">
+                        </div>
+
+                    </div>
+
+                    <!-- LIGNE 3 -->
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <label>Date début</label>
+                            <input type="date" id="date_debut_modif" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Date fin</label>
+                            <input type="date" id="date_fin_modif" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Statut</label>
+                            <select id="statut_concours_modif" class="form-control">
+                                <option value="OUVERT">OUVERT</option>
+                                <option value="FERME">FERME</option>
+                                <option value="EN_ATTENTE">EN_ATTENTE</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Annuler
+                    </button>
+
+                    <button type="submit" class="btn btn-warning">
+                        Modifier
+                    </button>
                 </div>
 
             </form>

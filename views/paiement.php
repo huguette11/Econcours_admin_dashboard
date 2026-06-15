@@ -84,27 +84,23 @@
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-striped" id="paiementTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Nom du candidat</th>
-                                                <th class="text-center">Concours</th>
-                                                <th class="text-center">Statut du paiement</th>
-                                                <th class="text-center">Voir détails</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
+                                                <th class="text-center">Candidat</th>
+                                                <th class="text-center">Paiements</th>
+                                                <th class="text-center">Total payé</th>
+                                                <th class="text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Nom du candidat</th>
-                                                <th class="text-center">Concours</th>
-                                                <th class="text-center">Statut du paiement</th>
-                                                <th class="text-center">Voir détails</th>
-                                                <th class="text-center">Modifier</th>
-                                                <th class="text-center">Supprimer</th>
+                                                <th class="text-center">Candidat</th>
+                                                <th class="text-center">Paiements</th>
+                                                <th class="text-center">Total payé</th>
+                                                <th class="text-center">Action</th>
                                             </tr>
                                         </tfoot>
 
@@ -157,9 +153,18 @@
 
     <?php include('modals/modal_paiement.php'); ?>
 
+    <script type="module">
+        import PaiementController from "../Controllers/PaiementController.js";
 
+        document.addEventListener("DOMContentLoaded", () => {
 
+            PaiementController.loadPaiementsByCandidat();
+            PaiementController.initPaiementEvents();
+            PaiementController.initPaiementStatusInlineEdit();
+            // PaiementController.updateSelectColor(select);
 
+        });
+    </script>
 
 </body>
 

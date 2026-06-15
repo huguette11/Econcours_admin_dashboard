@@ -1,12 +1,14 @@
 import ConcoursModel from "../models/ConcoursModel.js";
 import AdminController from "./AdminController.js";
+import CategorieModel from "../models/CategorieModel.js";
+import CentreModel from "../models/CentreModel.js";
 
 export default class ConcoursController {
 
     // =========================================
     // GET ALL
     // =========================================
-    static async getAll(page = 1) {
+    static async getAll() {
 
         const token = AdminController.getToken();
 
@@ -15,7 +17,7 @@ export default class ConcoursController {
             return [];
         }
 
-        const res = await ConcoursModel.getAllConcours(token, page);
+        const res = await ConcoursModel.getAllConcours(token);
 
         console.log("REPONSE API :", res);
         console.log("NOMBRE :", res.data.data.length);
@@ -70,15 +72,7 @@ export default class ConcoursController {
                     </td>
 
                     <td class="text-center">
-                        ${item.nombre_postes || ""}
-                    </td>
-
-                    <td class="text-center">
-                        ${item.frais_inscription || ""}
-                    </td>
-
-                    <td class="text-center">
-                        ${item.annee || ""}
+                         ${item.nombre_postes || ""}
                     </td>
 
                     <td class="text-center">
@@ -90,25 +84,58 @@ export default class ConcoursController {
                     </td>
 
                     <td class="text-center">
-                        ${item.statut_concours || ""}
+
+                        <select
+                            class="form-control statut-select"
+                            data-id="${item.id_concours}"
+                        >
+                            <option value="ATTENTE"
+                                ${item.statut_concours === "ATTENTE" ? "selected" : ""}>
+                                EN_ATTENTE
+                            </option>
+
+                            <option value="OUVERT"
+                                ${item.statut_concours === "OUVERT" ? "selected" : ""}>
+                                OUVERT
+                            </option>
+
+                            <option value="FERME"
+                                ${item.statut_concours === "FERME" ? "selected" : ""}>
+                                FERME
+                            </option>
+                        </select>
+
                     </td>
 
-                    <td class="text-center">
+                     <td class="text-center">
+
                         <button 
                             class="btn btn-warning btn-sm btn-edit"
                             data-id="${item.id_concours}"
+                            data-nom="${item.nom}"
+                            data-type="${item.type}"
+                            data-description="${item.description || ''}"
+                            data-frais="${item.frais_inscription || ''}"
+                            data-postes="${item.nombre_postes}"
+                            data-annee="${item.annee}"
+                            data-debut="${item.date_debut?.split('T')[0]}"
+                            data-fin="${item.date_fin?.split('T')[0]}"
+                            data-statut="${item.statut_concours}"
                         >
                             <i class="fa fa-edit"></i>
                         </button>
+
                     </td>
 
                     <td class="text-center">
+
                         <button 
                             class="btn btn-danger btn-sm btn-delete"
                             data-id="${item.id_concours}"
                         >
                             <i class="fa fa-trash"></i>
                         </button>
+
                     </td>
 
                 </tr>
@@ -131,180 +158,278 @@ export default class ConcoursController {
             ordering: true,
             info: true
         });
-
-        // EVENTS
-        this.initDeleteButtons();
-        this.initEditButtons();
     }
+
 
     // =========================================
     // AJOUT
     // =========================================
-    static async create(data) {
-        console.log("DATA ENVOYEE :", data);
+    static initCreateConcours() {
 
-        const token = AdminController.getToken();
+        const form = document.getElementById("formConcours");
 
-        const res = await ConcoursModel.createConcours(token, data);
+        if (!form) return;
 
-        console.log("CREATE :", res);
+        form.addEventListener("submit", async (e) => {
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur création");
-            return false;
-        }
+            e.preventDefault();
 
-        alert("Concours ajouté");
+            const token = AdminController.getToken();
 
-        await this.initDataTable();
+            const data = {
+                nom: document.querySelector("[name='nom']").value,
+                type: document.querySelector("[name='type']").value,
+                description: document.querySelector("[name='description']").value,
+                nombre_postes: Number(document.querySelector("[name='nombre_postes']").value),
+                annee: Number(document.querySelector("[name='annee']").value),
+                date_debut: document.querySelector("[name='date_debut']").value,
+                date_fin: document.querySelector("[name='date_fin']").value,
+                statut_concours: document.querySelector("[name='statut_concours']").value,
+                categorieId: Number(document.querySelector("[name='categorieId']").value),
+                centres: $('#centres').val()?.map(Number) || []
+            };
 
-        return true;
+            const res = await ConcoursModel.createConcours(token, data);
+
+            if (!res.ok) {
+
+                Swal.fire(
+                    "Erreur",
+                    res.data?.error || res.data?.message || "Erreur création concours",
+                    "error"
+                );
+
+                return;
+            }
+
+            Swal.fire(
+                "Succès",
+                res.data.message,
+                "success"
+            );
+
+            form.reset();
+
+            $("#ajouter_concours").modal("hide");
+
+            await this.initDataTable();
+        });
     }
+
+
 
     // =========================================
     // MODIFICATION
     // =========================================
-    static async update(id, data) {
+    static initEditConcours() {
 
-        const token = AdminController.getToken();
+        const form = document.getElementById("formUpdateConcours");
 
-        const res = await ConcoursModel.updateConcours(token, id, data);
+        if (!form) return;
 
-        console.log("UPDATE :", res);
+        // CLICK bouton EDIT
+        document.addEventListener("click", (e) => {
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur modification");
-            return false;
-        }
+            const btn = e.target.closest(".btn-edit");
+            if (!btn) return;
 
-        alert("Concours modifié");
+            // remplir modal
+            document.getElementById("id_concours_modif").value = btn.dataset.id;
+            document.getElementById("nom_modif").value = btn.dataset.nom || "";
+            document.getElementById("type_modif").value = btn.dataset.type || "";
+            document.getElementById("description_modif").value = btn.dataset.description || "";
+            document.getElementById("frais_inscription_modif").value = btn.dataset.frais || "";
+            document.getElementById("nombre_postes_modif").value = btn.dataset.postes || "";
+            document.getElementById("annee_modif").value = btn.dataset.annee || "";
+            document.getElementById("date_debut_modif").value = btn.dataset.debut || "";
+            document.getElementById("date_fin_modif").value = btn.dataset.fin || "";
+            document.getElementById("statut_concours_modif").value = btn.dataset.statut || "";
 
-        await this.initDataTable();
+            $("#modifier_concours").modal("show");
+        });
 
-        return true;
+        // SUBMIT UPDATE
+        form.addEventListener("submit", async (e) => {
+
+            e.preventDefault();
+            console.log("SUBMIT UPDATE DECLENCHE");
+
+            const token = AdminController.getToken();
+
+            const id = document.getElementById("id_concours_modif").value;
+
+            console.log("ID :", id);
+
+            const data = {
+                nom: document.getElementById("nom_modif").value,
+                type: document.getElementById("type_modif").value,
+                description: document.getElementById("description_modif").value,
+                frais_inscription: Number(document.getElementById("frais_inscription_modif").value),
+                nombre_postes: Number(document.getElementById("nombre_postes_modif").value),
+                annee: Number(document.getElementById("annee_modif").value),
+                date_debut: document.getElementById("date_debut_modif").value,
+                date_fin: document.getElementById("date_fin_modif").value,
+                statut_concours: document.getElementById("statut_concours_modif").value,
+            };
+            console.log("DATA :", data);
+            const res = await ConcoursModel.updateConcours(id, token, data);
+            console.log("REPONSE UPDATE :", res);
+            if (!res.ok) {
+
+                Swal.fire(
+                    "Erreur",
+                    res.data.error || "Erreur modification concours",
+                    "error"
+                );
+
+                return;
+            }
+
+            Swal.fire(
+                "Succès",
+                res.data.message,
+                "success"
+            );
+
+            $("#modifier_concours").modal("hide");
+
+            await this.initDataTable();
+        });
     }
-
     // =========================================
     // SUPPRESSION
     // =========================================
-    static async delete(id) {
+    static initDeleteConcours() {
 
-        const token = AdminController.getToken();
+        document.addEventListener("click", async (e) => {
 
-        const res = await ConcoursModel.deleteConcours(token, id);
+            const btn = e.target.closest(".btn-delete");
+            if (!btn) return;
 
-        console.log("DELETE :", res);
+            const id = btn.dataset.id;
 
-        if (!res.ok) {
-            alert(res.data.message || "Erreur suppression");
-            return false;
-        }
+            const confirm = await Swal.fire({
+                title: "Confirmer suppression ?",
+                text: "Cette action est irréversible",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui supprimer",
+                cancelButtonText: "Annuler"
+            });
 
-        alert("Concours supprimé");
+            if (!confirm.isConfirmed) return;
 
-        await this.initDataTable();
+            const token = AdminController.getToken();
 
-        return true;
+            const res = await ConcoursModel.deleteConcours(id, token);
+
+            if (!res.ok) {
+                Swal.fire("Erreur", res.data.error || "Suppression échouée", "error");
+                return;
+            }
+
+            Swal.fire("Succès", res.data.message, "success");
+
+            await this.initDataTable();
+        });
     }
 
-    // =========================================
-    // DETAIL
-    // =========================================
-    static async getDetail(id) {
+    static initSwitchStatus() {
 
-        const token = AdminController.getToken();
+        document.addEventListener("change", async (e) => {
 
-        const res = await ConcoursModel.getDetailConcours(token, id);
+            const select = e.target.closest(".statut-select");
 
-        if (!res.ok) {
-            alert("Erreur détail concours");
-            return null;
-        }
+            if (!select) return;
 
-        return res.data;
-    }
+            const id_concours = select.dataset.id;
+            const statut_concours = select.value;
 
-    // =========================================
-    // DELETE BUTTONS
-    // =========================================
-    static initDeleteButtons() {
+            const token = AdminController.getToken();
 
-        const buttons = document.querySelectorAll(".btn-delete");
+            const res = await ConcoursModel.switchStatutConcours(
+                id_concours,
+                statut_concours,
+                token
+            );
 
-        buttons.forEach((btn) => {
+            console.log("ERREUR BACK :", res.data);
 
-            btn.addEventListener("click", async () => {
+            if (!res.ok) {
 
-                const id = btn.dataset.id;
-
-                const confirmDelete = confirm(
-                    "Voulez-vous supprimer ce concours ?"
+                Swal.fire(
+                    "Erreur",
+                    res.data.error || "Impossible de modifier le statut",
+                    "error"
                 );
 
-                if (!confirmDelete) return;
+                return;
+            }
 
-                await this.delete(id);
-            });
+            Swal.fire(
+                "Succès",
+                res.data.message,
+                "success"
+            );
         });
     }
 
-    // =========================================
-    // EDIT BUTTONS
-    // =========================================
-    static initEditButtons() {
+    static async loadSelects() {
 
-        const buttons = document.querySelectorAll(".btn-edit");
+        const token = AdminController.getToken();
 
-        buttons.forEach((btn) => {
+        // ===== CATEGORIES =====
+        const catRes = await CategorieModel.getAllCategories(token);
 
-            btn.addEventListener("click", async () => {
+        const catSelect = $('#categorieId');
 
-                const id = btn.dataset.id;
+        catSelect.empty().append('<option value=""></option>');
 
-                const concours = await this.getDetail(id);
-
-                console.log("DETAIL :", concours);
-
-                // EXEMPLE
-                // remplir modal ici
-
-                alert("Modification concours ID : " + id);
+        if (catRes.ok) {
+            catRes.data.data.forEach(cat => {
+                catSelect.append(new Option(cat.libelle, cat.id));
             });
+        }
+
+        // ===== CENTRES =====
+        const centreRes = await CentreModel.getAllCentres(token);
+
+        const centreSelect = $('#centres');
+
+        centreSelect.empty().append('<option value=""></option>');
+
+        if (centreRes.ok) {
+            centreRes.data.data.forEach(centre => {
+                centreSelect.append(new Option(centre.nom, centre.id_centre));
+            });
+        }
+
+        this.initSelect2();
+    }
+
+    static initSelect2() {
+
+        $('#categorieId, #centres').each(function () {
+
+            if ($(this).hasClass("select2-hidden-accessible")) {
+                $(this).select2('destroy');
+            }
+
+        });
+
+        $('#categorieId').select2({
+            placeholder: "Sélection catégorie",
+            width: '100%',
+            allowClear: true,
+            minimumResultsForSearch: 0
+        });
+
+        $('#centres').select2({
+            placeholder: "Sélection centres",
+            width: '100%',
+            allowClear: true,
+            minimumResultsForSearch: 0
         });
     }
 
-    // =========================================
-    // SEARCH
-    // =========================================
-    static async search(query) {
-
-        const token = AdminController.getToken();
-
-        const res = await ConcoursModel.searchConcours(token, query);
-
-        if (!res.ok) {
-            return [];
-        }
-
-        return res.data;
-    }
-
-    // =========================================
-    // SWITCH STATUS
-    // =========================================
-    static async switchStatus(id) {
-
-        const token = AdminController.getToken();
-
-        const res = await ConcoursModel.switchStatus(token, id);
-
-        if (!res.ok) {
-            alert("Erreur changement statut");
-            return false;
-        }
-
-        await this.initDataTable();
-
-        return true;
-    }
 }

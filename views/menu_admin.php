@@ -1,13 +1,17 @@
-<ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+<ul class="navbar-nav bg-primary sidebar sidebar-dark accordion sidebar" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-        <div class="sidebar-brand-icon rotate-n-15">
+        <!-- <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-bus"></i>
 
 
-        </div>
-        <div class="sidebar-brand-text mx-3">BI - TRAVEL</sup></div>
+        </div> -->
+        <!-- <div class="sidebar-brand-text mx-3">BI - TRAVEL</sup></div> -->
+        <div class="logo">
+        <img src="../pages/assets/image/armoiries-1.png" alt="logo" height="40">
+        E-CONCOURS
+    </div>
     </a>
 
     <!-- Divider -->
@@ -51,9 +55,9 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="examen.php">
+        <a class="nav-link" href="inscription.php">
             <i class="fas fa-calendar-alt"></i>
-            <span>Examens</span></a>
+            <span>Inscriptions</span></a>
     </li>
 
     <li class="nav-item">
@@ -90,4 +94,5 @@
     </div>
 
 </ul>
+<script src="../pages/assets/js/script.js"></script>
 <!-- End of Sidebar -->

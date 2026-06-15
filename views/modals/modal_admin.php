@@ -7,7 +7,7 @@
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="../api/modules/ajouter_admin.php" method="POST">
+            <form id="adminForm">
                 <div class="modal-body">
                     <div class="form-group">
                         <div class="row">
@@ -37,6 +37,14 @@
                             <div class="col-md-4">
                                 <label for="telephone">Téléphone</label>
                                 <input id="telephone" class="form-control" type="text" name="telephone" placeholder="Entrer le téléphone" required>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="role">Rôle (*)</label>
+                                <select id="role" class="form-control" name="role" required>
+                                    <option value="SUPERADMIN"> Administrateur</option>
+                                    <option value="GESTIONNAIRE">Gestionnaire</option>
+                                </select>
                             </div>
 
                             <div class="col-md-4">

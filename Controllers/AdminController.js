@@ -117,25 +117,25 @@ export default class AdminController {
         return true;
     }
 
-    static async GetAllConcours(req, res) {
+    // static async GetAllConcours(req, res) {
 
-    try {
+    //     try {
 
-        const concours = await Concours.findAll();
+    //         const concours = await Concours.findAll();
 
-        res.json({
-            ok: true,
-            data: concours
-        });
+    //         res.json({
+    //             ok: true,
+    //             data: concours
+    //         });
 
-    } catch (error) {
+    //     } catch (error) {
 
-        res.status(500).json({
-            ok: false,
-            message: error.message
-        });
-    }
-}
+    //         res.status(500).json({
+    //             ok: false,
+    //             message: error.message
+    //         });
+    //     }
+    // }
 
     static async loadDashboard() {
 
@@ -150,4 +150,152 @@ export default class AdminController {
 
         return res.data;
     }
+
+
+    static async loadAdmins() {
+
+        const token = AdminController.getToken();
+
+        const res = await AdminModel.getAllAdmins(token);
+
+        if (!res.ok) {
+            console.error("Erreur admins :", res);
+            return;
+        }
+
+        const admins = res.data.data;
+
+        const tbody = document.querySelector("#adminTable tbody");
+        tbody.innerHTML = "";
+
+        admins.forEach((admin, index) => {
+            console.log(admin);
+            tbody.innerHTML += `
+                <tr>
+                    <td class="text-center">${index + 1}</td>
+                    <td>${admin.nom}</td>
+                    <td>${admin.prenom}</td>
+                    <td>${admin.email}</td>
+                    <td>${admin.telephone || '-'}</td>
+                    <td>${new Date(admin.date_creation).toLocaleDateString()}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning btn-sm btn-edit-admin"
+                            data-id="${admin.id_admin}">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-danger btn-sm btn-delete-admin"
+                            data-id="${admin.id}">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        this.initDataTable();
+    }
+
+    static initDataTable() {
+
+        if ($.fn.DataTable.isDataTable("#adminTable")) {
+            $("#adminTable").DataTable().destroy();
+        }
+
+        $("#adminTable").DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            }
+        });
+    }
+
+    static initCreateAdmin() {
+
+        const form = document.getElementById("adminForm");
+
+        if (!form) {
+            console.error("adminForm introuvable dans le DOM");
+            return;
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const token = AdminController.getToken();
+
+            const data = {
+                nom: document.getElementById("nom").value,
+                prenom: document.getElementById("prenom").value,
+                email: document.getElementById("email").value,
+                telephone: document.getElementById("telephone").value,
+                mot_de_passe: document.getElementById("mot_de_passe").value,
+                role: document.getElementById("role").value
+            };
+
+            const res = await AdminModel.registerAdmin(token, data);
+
+            if (!res.ok) {
+                Swal.fire("Erreur", "Création échouée", "error");
+                return;
+            }
+
+            Swal.fire("Succès", "Admin créé avec succès", "success");
+            form.reset();
+
+            $("#ajouter_admin").modal("hide");
+
+            this.initDataTable();
+        });
+    }
+
+    static initDeleteAdmin() {
+
+        document.addEventListener("click", async (e) => {
+
+            const btn = e.target.closest(".btn-delete-admin");
+
+            if (!btn) return;
+
+            const id_admin = btn.dataset.id;
+
+            console.log("ID ADMIN =", id_admin);
+
+            const result = await Swal.fire({
+                title: "Supprimer cet administrateur ?",
+                text: "Cette action est irréversible",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Supprimer",
+                cancelButtonText: "Annuler"
+            });
+
+            if (!result.isConfirmed) return;
+
+            const token = this.getToken();
+
+            const res = await AdminModel.deleteAdmin(
+                token,
+                id_admin
+            );
+
+            if (!res.ok) {
+                Swal.fire(
+                    "Erreur",
+                    res.data.error || "Suppression impossible",
+                    "error"
+                );
+                return;
+            }
+
+            Swal.fire(
+                "Succès",
+                res.data.message,
+                "success"
+            );
+
+            await this.loadAdmins();
+        });
+    }
 }
+

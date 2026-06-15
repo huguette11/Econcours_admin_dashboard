@@ -24,6 +24,7 @@
     <!-- Custom styles for this page -->
     <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <?php include("inclusions_haut.php") ?>
 </head>
 
@@ -64,8 +65,8 @@
                                     </div>
                                     <div class="text-left">
                                         <div class="col-md-12">
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#ajouter_categorie">Ajouter une catégorie <i
+                                            <button type="button" class="btn-primary" data-toggle="modal"
+                                                data-target="#ajouter_inscription">Ajouter une inscription <i
                                                     class="fa  fa-plus "></i></button>
                                         </div>
                                     </div>
@@ -80,28 +81,30 @@
                             <div class="card">
                                 <!-- Card header -->
                                 <div class="card-header border-0">
-                                    <h3 class="mb-0">Liste des catégories</h3>
+                                    <h3 class="mb-0">Liste des inscriptions</h3>
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-striped" id="inscriptionTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
-                                                <th class="text-center">Modifier</th>
+                                                <th class="text-center">Nom du candidat</th>
+                                                <th class="text-center">Concours</th>
+                                                <!-- <th class="text-center">Modifier</th> -->
                                                 <th class="text-center">Supprimer</th>
+                                                <th class="text-center">Voir détails</th>
+
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
-                                                <th class="text-center">Modifier</th>
+                                                <th class="text-center">Nom du candidat</th>
+                                                <th class="text-center">Concours</th>
+                                                <!-- <th class="text-center">Modifier</th> -->
                                                 <th class="text-center">Supprimer</th>
-                                            </tr>
+                                                <th class="text-center">Voir détails</th>
                                         </tfoot>
 
                                         <tbody>
@@ -148,24 +151,34 @@
     <!-- Page level plugins -->
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-    <?php include('modals/modal_categorie.php'); ?>
+    <?php include('modals/modal_inscription.php'); ?>
     <script type="module">
+        import InscriptionController from "../controllers/InscriptionController.js";
 
-    import CategorieController from "../controllers/CategorieController.js";
+        document.addEventListener("DOMContentLoaded", () => {
+            InscriptionController.initInscriptionConcours();
+            InscriptionController.loadCentres();
+            InscriptionController.loadConcours();
+            InscriptionController.loadCandidats();
+            InscriptionController.loadInscriptions();
+            InscriptionController.initEvents();
+            InscriptionController.initDeleteInscription();
+            $(document).on("change", "#id_concours", async function() {
 
-    document.addEventListener("DOMContentLoaded", () => {
-        CategorieController.initDataTable();
-        CategorieController.initCreateCategorie();
-        CategorieController.initEditButtons();
-        CategorieController.initUpdateCategorie();
-        CategorieController.initDeleteButtons();
-    });
+                const id_concours = $(this).val();
 
-</script>
+                console.log("ID concours SAFE =", id_concours);
 
+                if (!id_concours || id_concours === "[object HTMLSelectElement]") return;
 
-
+                await InscriptionController.loadCentresByConcours(
+                    Number(id_concours)
+                );
+            });
+        });
+    </script>
 
 
 </body>

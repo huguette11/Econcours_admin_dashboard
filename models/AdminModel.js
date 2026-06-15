@@ -53,4 +53,60 @@ export default class AdminModel {
             data: result
         };
     }
+
+    static async getAllAdmins(token) {
+
+        const res = await fetch(`${API_URL}/admin/get-all-admin`, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        });
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
+
+    static async registerAdmin(token, data) {
+
+        const res = await fetch(`${API_URL}/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
+
+    static async deleteAdmin(token, id_admin) {
+
+        const res = await fetch(
+            `${API_URL}/admin/delete-admin/${id_admin}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
 }

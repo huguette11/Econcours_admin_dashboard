@@ -24,6 +24,7 @@
     <!-- Custom styles for this page -->
     <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <?php include("inclusions_haut.php") ?>
 </head>
 
@@ -84,7 +85,7 @@
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
@@ -102,7 +103,7 @@
                                             </tr>
                                         </tfoot>
 
-                                        <tbody>
+                                        <tbody id="centreTableBody">
 
                                         </tbody>
                                     </table>
@@ -146,10 +147,17 @@
     <!-- Page level plugins -->
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <?php include('modals/modal_centre.php'); ?>
 
-
+    <script type="module">
+        import CentreController from '../Controllers/CentreController.js';
+        CentreController.initCreateCentre();
+        CentreController.initDataTable(); 
+        CentreController.initEditCentre();
+        CentreController.initDeleteCentre();
+    </script>
 
 
 

@@ -77,9 +77,16 @@ export default class CategorieController {
         }
 
         $('#dataTable').DataTable({
+            destroy: true,
+            responsive: true,
+            paging: true,
             pageLength: 10,
-            responsive: true
+            lengthMenu: [10, 25, 50, 100],
+            searching: true,
+            ordering: true,
+            info: true,
         });
+
     }
 
     static initCreateCategorie() {
@@ -163,6 +170,7 @@ export default class CategorieController {
 
                 e.preventDefault();
 
+
                 const token =
                     AdminController.getToken();
 
@@ -176,6 +184,7 @@ export default class CategorieController {
                     description:
                         document.getElementById("description_modif").value
                 };
+                console.log(token);
 
                 console.log(data);
 
@@ -212,4 +221,42 @@ export default class CategorieController {
         );
     }
 
-}
+    static initDeleteButtons() {
+
+        document.addEventListener("click", async (e) => {
+
+            const btn = e.target.closest(".delete-categorie");
+            if (!btn) return;
+
+            const id = btn.dataset.id;
+
+            const token = AdminController.getToken();
+
+            Swal.fire({
+                title: "Confirmer la suppression ?",
+                text: "Cette action est irréversible",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui supprimer",
+                cancelButtonText: "Annuler"
+            }).then(async (result) => {
+
+                if (!result.isConfirmed) return;
+
+                const res = await CategorieModel.deleteCategorie(id, token);
+
+                if (!res.ok) {
+                    Swal.fire("Erreur", res.data.error || "Suppression impossible", "error");
+                    return;
+                }
+
+                Swal.fire("Succès", res.data.message, "success");
+
+                CategorieController.initDataTable(); // refresh sans reload page
+            });
+        });
+
+
+    }
+
+}    

@@ -2,8 +2,8 @@ const API_URL = "http://localhost:4000/api/admin";
 
 export default class ConcoursModel {
 
-    static async getAllConcours(token, page = 1) {
-        const res = await fetch(`${API_URL}/concours?page=${page}`, {
+    static async getAllConcours(token) {
+        const res = await fetch(`${API_URL}/concours`, {
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -50,13 +50,17 @@ export default class ConcoursModel {
         };
     }
 
-    static async updateConcours(token, id, data) {
-        const res = await fetch(`${API_URL}/concours/${id}`, {
+    static async updateConcours(id_concours, token, data) {
+
+        const res = await fetch(`${API_URL}/concours/${id_concours}`, {
+
             method: "PUT",
+
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
+
             body: JSON.stringify(data)
         });
 
@@ -68,8 +72,9 @@ export default class ConcoursModel {
         };
     }
 
-    static async deleteConcours(token, id) {
-        const res = await fetch(`${API_URL}/concours/${id}`, {
+    static async deleteConcours(id_concours, token) {
+
+        const res = await fetch(`${API_URL}/concours/${id_concours}`, {
             method: "DELETE",
             headers: {
                 "Authorization": "Bearer " + token
@@ -84,28 +89,21 @@ export default class ConcoursModel {
         };
     }
 
-    static async searchConcours(token, query) {
-        const res = await fetch(`${API_URL}/concours/search?q=${query}`, {
-            headers: {
-                "Authorization": "Bearer " + token
+    static async switchStatutConcours(id_concours, statut_concours, token) {
+
+        const res = await fetch(
+            `${API_URL}/concours/${id_concours}/switch-status`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    statut_concours
+                })
             }
-        });
-
-        const result = await res.json();
-
-        return {
-            ok: res.ok,
-            data: result
-        };
-    }
-
-    static async switchStatus(token, id) {
-        const res = await fetch(`${API_URL}/concours/${id}/switch-status`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
+        );
 
         const result = await res.json();
 

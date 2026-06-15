@@ -84,7 +84,7 @@
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table" id="adminTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
@@ -92,6 +92,7 @@
                                                 <th class="text-center">Prénom(s)</th>
                                                 <th class="text-center">Email</th>
                                                 <th class="text-center">Téléphone</th>
+                                                <th class="text-center">Date de création</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
@@ -103,6 +104,7 @@
                                                 <th class="text-center">Prénom(s)</th>
                                                 <th class="text-center">Email</th>
                                                 <th class="text-center">Téléphone</th>
+                                                <th class="text-center">Date de création</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
@@ -155,8 +157,14 @@
 
     <?php include('modals/modal_admin.php'); ?>
 
-    <script type="module"
-    src="../pages/assets/js/admin.js">
+    <script type="module">
+        import AdminController from "../Controllers/AdminController.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            AdminController.loadAdmins();
+            AdminController.initCreateAdmin();
+            AdminController.initDeleteAdmin();
+        });
     </script>
 
 

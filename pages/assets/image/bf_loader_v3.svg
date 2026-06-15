@@ -1,0 +1,56 @@
+<svg viewBox="0 0 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Anneau rouge extérieur -->
+  <circle cx="60" cy="60" r="52" fill="none" stroke="#CC0000" stroke-width="5"
+          stroke-dasharray="100 226" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="360 60 60"
+                      dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="60" r="52" fill="none" stroke="#CC0000" stroke-width="5"
+          stroke-dasharray="45 281" stroke-linecap="round" stroke-dashoffset="-130">
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="360 60 60"
+                      dur="1.8s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Anneau jaune milieu tournant inverse -->
+  <circle cx="60" cy="60" r="42" fill="none" stroke="#FFD700" stroke-width="4"
+          stroke-dasharray="70 194" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="-360 60 60"
+                      dur="2.4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="60" r="42" fill="none" stroke="#FFD700" stroke-width="4"
+          stroke-dasharray="30 234" stroke-linecap="round" stroke-dashoffset="-100">
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="-360 60 60"
+                      dur="2.4s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Anneau vert intérieur -->
+  <circle cx="60" cy="60" r="32" fill="none" stroke="#009A44" stroke-width="5"
+          stroke-dasharray="60 141" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="360 60 60"
+                      dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="60" cy="60" r="32" fill="none" stroke="#009A44" stroke-width="5"
+          stroke-dasharray="25 176" stroke-linecap="round" stroke-dashoffset="-80">
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="360 60 60"
+                      dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Étoile jaune au centre — entre rouge et vert — pulse + légère rotation -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      from="0 60 60" to="360 60 60"
+                      dur="6s" repeatCount="indefinite"/>
+    <polygon points="60,48 62.4,55.4 70.2,55.4 64,60 66.4,67.4 60,63 53.6,67.4 56,60 49.8,55.4 57.6,55.4"
+             fill="#FFD700">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/>
+    </polygon>
+  </g>
+
+</svg>

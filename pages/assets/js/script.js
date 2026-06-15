@@ -1,20 +1,22 @@
-document.addEventListener("DOMContentLoaded", function () {
-  // Sélectionner tous les liens du menu (hors ceux déjà actifs)
-  const navLinks = document.querySelectorAll(".nav-link:not(.active)");
+document.addEventListener("DOMContentLoaded", () => {
 
-  navLinks.forEach(function (link) {
-    // Stocker les couleurs initiales
-    const originalBg = window.getComputedStyle(link).backgroundColor;
-    const originalColor = window.getComputedStyle(link).color;
+    const currentPage = window.location.pathname.split("/").pop();
 
-    link.addEventListener("mouseover", function () {
-      link.style.backgroundColor = "#e1eaf4ff"; // bleu foncé
-      link.style.color = "#000000"; // texte blanc
-    });
+    document.querySelectorAll("#accordionSidebar .nav-link")
+        .forEach(link => {
 
-    link.addEventListener("mouseout", function () {
-      link.style.backgroundColor = originalBg;
-      link.style.color = originalColor;
-    });
-  });
+            const href = link.getAttribute("href");
+
+            if (href === currentPage) {
+
+                link.classList.add("active");
+
+                const navItem = link.closest(".nav-item");
+
+                if (navItem) {
+                    navItem.classList.add("active");
+                }
+            }
+        });
+
 });
