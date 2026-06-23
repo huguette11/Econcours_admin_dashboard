@@ -22,7 +22,7 @@
                     <img class="img-profile rounded-circle"
                         src="../img/undraw_profile.svg">
                 </span>
-<!--                 
+                <!--                 
                 <div class="media-body  ml-2  d-none d-lg-block">
                     <span class="mb-0 text-black  font-weight-bold"><?php echo $_SESSION["username"] ?></span>
                 </div> -->
@@ -31,13 +31,13 @@
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                 aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="profil.php">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                    <i class="fas fa-user fa-sm fa-fw mr-2 text-black-400"></i>
                     Profil
                 </a>
 
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="deconnexion.php">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                <a style="color: red;" class="dropdown-item" href="#" id="btnLogout">
+                    <i style="color: red;" class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-red-400"></i>
                     Déconnexion
                 </a>
             </div>

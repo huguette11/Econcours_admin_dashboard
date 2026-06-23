@@ -65,7 +65,7 @@
                                     <div class="text-left">
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#ajouter_categorie">Ajouter une catégorie <i
+                                                data-target="#ajouter_examen">Ajouter un résultat <i
                                                     class="fa  fa-plus "></i></button>
                                         </div>
                                     </div>
@@ -80,25 +80,29 @@
                             <div class="card">
                                 <!-- Card header -->
                                 <div class="card-header border-0">
-                                    <h3 class="mb-0">Liste des catégories</h3>
+                                    <h3 class="mb-0">Liste des résultats</h3>
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
+                                                <th class="text-center">Nom du candidat</th>
+                                                <th class="text-center">Examen</th>
+                                                <th class="text-center">Note</th>
+                                                <th class="text-center">Moyenne générale</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th class="text-center">N°</th>
-                                                <th class="text-center">Libellé</th>
-                                                <th class="text-center">Description</th>
+                                               <th class="text-center">N°</th>
+                                                <th class="text-center">Nom du candidat</th>
+                                                <th class="text-center">Examen</th>
+                                                <th class="text-center">Note</th>
+                                                <th class="text-center">Moyenne générale</th>
                                                 <th class="text-center">Modifier</th>
                                                 <th class="text-center">Supprimer</th>
                                             </tr>
@@ -149,21 +153,7 @@
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    <?php include('modals/modal_categorie.php'); ?>
-    <script type="module">
-
-    import CategorieController from "../controllers/CategorieController.js";
-    import AdminController from "../Controllers/AdminController.js";
-    document.addEventListener("DOMContentLoaded", () => {
-        CategorieController.initDataTable();
-        CategorieController.initCreateCategorie();
-        CategorieController.initEditButtons();
-        CategorieController.initUpdateCategorie();
-        CategorieController.initDeleteButtons();
-        AdminController.initLogout();
-    });
-
-</script>
+    <?php include('modals/modal_resultat.php'); ?>
 
 
 

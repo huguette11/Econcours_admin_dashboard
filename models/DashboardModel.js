@@ -2,20 +2,37 @@ const API_URL = "http://localhost:4000/api/admin";
 
 export default class DashboardModel {
 
-    static async getDashboard(token) {
+    static async dashboard(token) {
 
-        const res = await fetch(`${API_URL}/dashboard`, {
-            method: "GET",
-            headers: {
-                "Authorization": "Bearer " + token
+        const res = await fetch(
+            "http://localhost:4000/api/admin/concours/candidat-by-concours",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             }
-        });
-
-        const data = await res.json();
+        );
 
         return {
             ok: res.ok,
-            data
+            data: await res.json()
+        };
+    }
+
+    static async getChartCirculaire(token) {
+
+        const res = await fetch(
+            "http://localhost:4000/api/admin/concours/circulaire",
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        return {
+            ok: res.ok,
+            data: await res.json()
         };
     }
 }

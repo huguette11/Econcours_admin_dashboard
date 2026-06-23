@@ -66,7 +66,7 @@ export default class InscriptionModel {
     static async getCentresByConcours(token, id_concours) {
 
         const response = await fetch(
-            `http://localhost:4000/api/admin/concours/${id_concours}/centres`,
+            `http://localhost:4000/api/admin/concours/concours-centre/${id_concours}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

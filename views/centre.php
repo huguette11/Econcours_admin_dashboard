@@ -153,10 +153,12 @@
 
     <script type="module">
         import CentreController from '../Controllers/CentreController.js';
+        import AdminController from "../Controllers/AdminController.js";
         CentreController.initCreateCentre();
         CentreController.initDataTable(); 
         CentreController.initEditCentre();
         CentreController.initDeleteCentre();
+        AdminController.initLogout();
     </script>
 
 

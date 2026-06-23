@@ -156,7 +156,7 @@
     <?php include('modals/modal_inscription.php'); ?>
     <script type="module">
         import InscriptionController from "../controllers/InscriptionController.js";
-
+        import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
             InscriptionController.initInscriptionConcours();
             InscriptionController.loadCentres();
@@ -165,6 +165,7 @@
             InscriptionController.loadInscriptions();
             InscriptionController.initEvents();
             InscriptionController.initDeleteInscription();
+            AdminController.initLogout();
             $(document).on("change", "#id_concours", async function() {
 
                 const id_concours = $(this).val();

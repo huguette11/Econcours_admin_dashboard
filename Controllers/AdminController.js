@@ -112,7 +112,19 @@ export default class AdminController {
 
         this.saveToken(res.data.token);
 
-        window.location.href = "views/admin.php";
+        // ADMIN
+        console.log(res.data)
+        localStorage.setItem(
+            "admin",
+            JSON.stringify(res.data.admin)
+        );
+
+        // localStorage.setItem(
+        //     "id_admin",
+        //     res.data.admin.id_admin
+        // );
+
+        window.location.href = "views/dashboard.php";
 
         return true;
     }
@@ -175,12 +187,17 @@ export default class AdminController {
                     <td class="text-center">${index + 1}</td>
                     <td>${admin.nom}</td>
                     <td>${admin.prenom}</td>
+                    <td>${admin.role}</td>
                     <td>${admin.email}</td>
                     <td>${admin.telephone || '-'}</td>
                     <td>${new Date(admin.date_creation).toLocaleDateString()}</td>
                     <td class="text-center">
-                        <button class="btn btn-warning btn-sm btn-edit-admin"
-                            data-id="${admin.id_admin}">
+                        <button class="btn btn-warning btn-sm btn-update-admin"
+                            data-id="${admin.id}"
+                            data-nom="${admin.nom}"
+                            data-prenom="${admin.prenom}"
+                            data-role="${admin.role}">
+                            
                             <i class="fa fa-edit"></i>
                         </button>
                     </td>
@@ -236,11 +253,19 @@ export default class AdminController {
             const res = await AdminModel.registerAdmin(token, data);
 
             if (!res.ok) {
-                Swal.fire("Erreur", "Création échouée", "error");
+                Swal.fire(
+                    "Erreur",
+                    res.data.error || "Suppression impossible",
+                    "error"
+                );
                 return;
             }
 
-            Swal.fire("Succès", "Admin créé avec succès", "success");
+            Swal.fire(
+                "Succès",
+                res.data.message,
+                "success"
+            );
             form.reset();
 
             $("#ajouter_admin").modal("hide");
@@ -296,6 +321,145 @@ export default class AdminController {
 
             await this.loadAdmins();
         });
+    }
+
+    static initEditAdmin() {
+
+        document.addEventListener("click", (e) => {
+
+            const btn = e.target.closest(".btn-update-admin");
+            if (!btn) return;
+
+            document.getElementById("edit_admin_id").value = btn.dataset.id;
+            document.getElementById("edit_nom").value = btn.dataset.nom;
+            document.getElementById("edit_prenom").value = btn.dataset.prenom;
+            document.getElementById("edit_role").value = btn.dataset.role;
+
+            $("#editAdminModal").modal("show");
+        });
+    }
+
+    static initUpdateAdmin() {
+
+        document.addEventListener("click", async (e) => {
+
+            const btn = e.target.closest("#btn-update-admin");
+            if (!btn) return;
+
+            e.preventDefault();
+
+            const token = AdminController.getToken();
+
+            const id_admin = document.getElementById("edit_admin_id").value;
+
+            const data = {
+                nom: document.getElementById("edit_nom").value,
+                prenom: document.getElementById("edit_prenom").value,
+                role: document.getElementById("edit_role").value
+            };
+
+            console.log("UPDATE DATA :", data);
+
+            const res = await AdminModel.updateAdmin(token, id_admin, data);
+
+            if (!res.ok) {
+                Swal.fire("Erreur", res.data?.error || "Erreur update", "error");
+                return;
+            }
+
+            Swal.fire("Succès", res.data.message, "success");
+
+            $("#editAdminModal").modal("hide");
+
+            await AdminController.loadAdmins();
+        });
+    }
+
+    static initLogout() {
+
+        document.addEventListener("click", (e) => {
+
+            const btn = e.target.closest("#btnLogout");
+
+            if (!btn) return;
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Déconnexion",
+                text: "Voulez-vous vraiment vous déconnecter ?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Oui",
+                cancelButtonText: "Annuler"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("admin");
+
+                    window.location.href = "../login.php";
+                }
+
+            });
+
+        });
+    }
+
+    static async loadProfile() {
+
+        const token = this.getToken();
+
+        const id_admin = localStorage.getItem("id_admin");
+
+        if (!id_admin) {
+            Swal.fire("Erreur", "Administrateur introuvable", "error");
+            return;
+        }
+
+        const res = await AdminModel.getProfile(
+            token,
+            id_admin
+        );
+
+        if (!res.ok) {
+            Swal.fire("Erreur", res.data.error, "error");
+            return;
+        }
+
+        const admin = res.data.data;
+
+        // document.getElementById("profil_nom").textContent =
+        //     admin.nom;
+
+        // document.getElementById("profil_prenom").textContent =
+        //     admin.prenom;
+
+        // document.getElementById("profil_role").textContent =
+        //     admin.role;
+        
+            
+
+        const nom = admin.nom || "";
+        const prenom = admin.prenom || "";
+
+        // initiales
+        const initials = (nom.charAt(0) + prenom.charAt(0)).toUpperCase();
+
+        // avatar
+        document.getElementById("profileAvatar").textContent = initials;
+
+        // infos header
+        document.getElementById("adminNomComplet").textContent = `${nom} ${prenom}`;
+        document.getElementById("adminRole").textContent = admin.role;
+
+        // champs profil
+        document.getElementById("profil_nom").textContent = nom;
+        document.getElementById("profil_prenom").textContent = prenom;
+        document.getElementById("profil_email").textContent = admin.email;
+        document.getElementById("profil_tel").textContent = admin.telephone || "-";
+        document.getElementById("profil_role").textContent = admin.role;
     }
 }
 

@@ -520,11 +520,12 @@ export default class InscriptionController {
             `<option value="">Sélectionnez un centre</option>`
         );
 
-        res.data.forEach(centre => {
+        res.data.forEach(data => {
 
+            console.log("DATA", data)
             select.append(`
-            <option value="${centre.id_centre}">
-                ${centre.nom}
+            <option value="${data.id_centre}">
+                ${data.nom}
             </option>
         `);
 

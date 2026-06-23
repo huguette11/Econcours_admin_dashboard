@@ -23,7 +23,7 @@ export default class PaiementModel {
 
     static async getPaiementDetail(token, idCandidat) {
         const res = await fetch(
-            `${API_URL}/paiements/candidat/${idCandidat}`,
+            `${API_URL}/paiements/${idCandidat}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`

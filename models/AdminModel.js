@@ -109,4 +109,45 @@ export default class AdminModel {
             data: result
         };
     }
+
+    static async updateAdmin(token, id_admin, data) {
+
+        const res = await fetch(
+            `${API_URL}/admin/update-admin/${id_admin}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            }
+        );
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
+
+    static async getProfile(token, id_admin) {
+
+        const res = await fetch(
+            `${API_URL}/admin/profile/${id_admin}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
 }

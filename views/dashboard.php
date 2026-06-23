@@ -18,6 +18,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="../css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../pages/assets/css/style.css">
 </head>
@@ -52,7 +53,7 @@
                                                 Nombre total de candidats
                                             </div>
 
-                                            <div id="nb_candidats"
+                                            <div id="totalCandidats"
                                                 style="font-size: 2rem; font-weight: bold;">
                                                 ...
                                             </div>
@@ -74,10 +75,10 @@
 
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Nombre total de concours
+                                                Paiements validés
                                             </div>
 
-                                            <div id="nb_concours"
+                                            <div id="totalPaiements"
                                                 style="font-size: 2rem; font-weight: bold;">
                                                 ...
                                             </div>
@@ -97,7 +98,7 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
 
-                                        <div class="col mr-2">
+                                        <!-- <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                                 Nombre total d'inscriptions validées
                                             </div>
@@ -106,7 +107,7 @@
                                                 style="font-size: 2rem; font-weight: bold;">
                                                 ...
                                             </div>
-                                        </div>
+                                        </div> -->
 
                                         <div class="col-auto">
                                             <i class="fas fa-file-alt fa-2x text-gray-300"></i>
@@ -127,7 +128,7 @@
                                                 Montant total des paiements
                                             </div>
 
-                                            <div id="montant_total"
+                                            <div id="montantTotal"
                                                 style="font-size: 2rem; font-weight: bold;">
                                                 ...
                                             </div>
@@ -143,54 +144,30 @@
                         </div>
 
                     </div>
-                    <div class="col-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header">
-                                <h6 class="m-0 font-weight-bold text-primary">
-                                    Inscriptions des 30 derniers jours
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="chartInscriptions"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="card shadow mb-4">
-                            <div class="card-header">
-                                <h6 class="m-0 font-weight-bold text-success">
-                                    Paiements par mois
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="chartPaiements"></canvas>
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card shadow mb-4">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        Candidats par concours
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="concoursChart"></canvas>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- <div class="col-xl-4 col-lg-5">
-                        <div class="card shadow mb-4">
-                            <div class="card-header">
-                                <h6 class="m-0 font-weight-bold text-warning">
-                                    Statut inscriptions
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="chartInscriptionStatus"></canvas>
-                            </div>
-                        </div>
-                    </div> -->
-
-                    <div class="col-xl-8 col-lg-5">
-                        <div class="card shadow mb-4">
-                            <div class="card-header">
-                                <h6 class="m-0 font-weight-bold text-success">
-                                    Répartition des concours
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="chartConcours"></canvas>
+                        <div class="col-lg-4">
+                            <div class="card shadow mb-4">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-success">
+                                        Répartition des candidats
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="candidatPieChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -229,9 +206,11 @@
     <script src="../vendor/chart.js/Chart.min.js"></script>
     <script type="module">
         import DashboardController from "../controllers/DashboardController.js";
-
+        import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
-            DashboardController.initDashboard();
+            DashboardController.loadDashboard();
+            DashboardController.loadPieChart();
+            AdminController.initLogout();
         });
     </script>
 

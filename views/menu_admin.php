@@ -67,15 +67,15 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="colis.php">
+        <a class="nav-link" href="examen.php">
             <i class="fas fa-box"></i>
-            <span>Colis</span></a>
+            <span>Examens</span></a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="reservation.php">
+        <a class="nav-link" href="resultat.php">
             <i class="fas fa-ticket-alt"></i>
-            <span>Réservations</span></a>
+            <span>Résultats</span></a>
     </li>
 
     <!-- Nav Item - Tables -->

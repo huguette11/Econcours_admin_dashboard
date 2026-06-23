@@ -181,7 +181,7 @@
 
     <script type="module">
         import CandidatController from "../Controllers/CandidatController.js";
-
+        import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
             CandidatController.initDataTable();
             CandidatController.registerCandidat();
@@ -189,6 +189,7 @@
             CandidatController.initEditModal();
             CandidatController.initEditSubmit();
             CandidatController.initDetails();
+            AdminController.initLogout();
         });
     </script>
 

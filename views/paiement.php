@@ -155,14 +155,14 @@
 
     <script type="module">
         import PaiementController from "../Controllers/PaiementController.js";
-
+        import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
 
             PaiementController.loadPaiementsByCandidat();
             PaiementController.initPaiementEvents();
             PaiementController.initPaiementStatusInlineEdit();
             // PaiementController.updateSelectColor(select);
-
+            AdminController.initLogout();
         });
     </script>
 

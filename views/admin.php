@@ -84,12 +84,13 @@
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table" id="adminTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-striped" id="adminTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom</th>
                                                 <th class="text-center">Prénom(s)</th>
+                                                <th class="text-center">Rôle</th>
                                                 <th class="text-center">Email</th>
                                                 <th class="text-center">Téléphone</th>
                                                 <th class="text-center">Date de création</th>
@@ -102,6 +103,7 @@
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom</th>
                                                 <th class="text-center">Prénom(s)</th>
+                                                <th class="text-center">Rôle</th>
                                                 <th class="text-center">Email</th>
                                                 <th class="text-center">Téléphone</th>
                                                 <th class="text-center">Date de création</th>
@@ -164,6 +166,9 @@
             AdminController.loadAdmins();
             AdminController.initCreateAdmin();
             AdminController.initDeleteAdmin();
+            AdminController.initEditAdmin();
+            AdminController.initUpdateAdmin();
+            AdminController.initLogout();
         });
     </script>
 

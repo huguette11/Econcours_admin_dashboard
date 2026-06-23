@@ -271,7 +271,6 @@ export default class CandidatController {
 
             }
 
-            // IMPORTANT
             const data = res.data.resp[0];
 
             const candidat = data.candidat;
