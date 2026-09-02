@@ -2,6 +2,8 @@ import ConcoursModel from "../models/ConcoursModel.js";
 import AdminController from "./AdminController.js";
 import CategorieModel from "../models/CategorieModel.js";
 import CentreModel from "../models/CentreModel.js";
+import ExamenModel from "../models/ExamenModel.js";
+
 
 export default class ConcoursController {
 
@@ -19,21 +21,22 @@ export default class ConcoursController {
 
         const res = await ConcoursModel.getAllConcours(token);
 
-        console.log("REPONSE API :", res);
-        console.log("NOMBRE :", res.data.data.length);
+        // console.log("REPONSE API :", res);
 
         if (!res.ok) {
-            alert("Erreur chargement concours");
+            Alert.error("Erreur chargement concours");
             return [];
         }
 
         return res.data;
+
     }
 
     // =========================================
     // DATATABLE
     // =========================================
     static async initDataTable() {
+        console.log("INIT DATATABLE");
 
         const tbody = document.getElementById("concoursTableBody");
 
@@ -47,6 +50,11 @@ export default class ConcoursController {
         const concours = response.data || [];
 
         console.log("LISTE CONCOURS :", concours);
+
+        // Destroy ancienne DataTable
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().destroy();
+        }
 
         tbody.innerHTML = "";
 
@@ -138,26 +146,126 @@ export default class ConcoursController {
 
                     </td>
 
+                    <td class="text-center">
+    <button
+        class="btn btn-info btn-sm btn-candidats"
+        data-id="${item.id_concours}"
+        data-nom="${item.nom}"
+        title="Voir les candidats"
+    >
+        <i class="fa-solid fa-users"></i>
+    </button>
+</td>
+
+<td class="text-center">
+<button  
+    class="btn btn-warning btn-sm btn-examens"
+    data-id="${item.id_concours}"
+    data-nom="${item.nom}"
+    title="Voir les examens"
+>
+    <i class="fa-solid fa-file-pen"></i>
+</button>
+</td>
+
                 </tr>
             `;
         });
 
-        // Destroy ancienne DataTable
-        if ($.fn.DataTable.isDataTable('#dataTable')) {
-            $('#dataTable').DataTable().destroy();
-        }
 
         // Nouvelle DataTable
         $('#dataTable').DataTable({
-            destroy: true,
             responsive: true,
             paging: true,
             pageLength: 10,
             lengthMenu: [10, 25, 50, 100],
             searching: true,
             ordering: true,
-            info: true
+            info: true,
+
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            }
         });
+
+        this.bindEvents();
+    }
+
+    static bindEvents() {
+
+        document.addEventListener("click", async (e) => {
+
+            const btn = e.target.closest(".btn-candidats");
+
+            if (!btn) return;
+
+            const id = btn.dataset.id;
+            const nom = btn.dataset.nom;
+
+            const token = AdminController.getToken();
+
+            const res = await ConcoursModel.getCandidatsConcours(token, id);
+
+            if (!res.ok) {
+                Alert.error("Impossible de charger les candidats");
+                return;
+            }
+
+            console.log(res.data);
+
+            this.afficherModalCandidats(nom, res.data);
+        });
+
+
+    }
+
+    static async afficherModalCandidats(nomConcours, candidats) {
+
+        document.getElementById("titreModal").textContent =
+            "Candidats - " + nomConcours;
+
+        const tbody = document.getElementById("tbodyCandidats");
+        tbody.innerHTML = "";
+
+        if (candidats.length === 0) {
+            tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center">
+                    Aucun candidat inscrit
+                </td>
+            </tr>`;
+        } else {
+
+            candidats.forEach((c, index) => {
+
+                tbody.innerHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${c.candidat.nom}</td>
+                    <td>${c.candidat.prenom}</td>
+                    <td>${c.candidat.email}</td>
+                    <td>${c.statut_inscription}</td>
+                </tr>
+            `;
+            });
+        }
+
+        const modal = new bootstrap.Modal(document.getElementById("modalCandidats"));
+        modal.show();
     }
 
 
@@ -432,4 +540,123 @@ export default class ConcoursController {
         });
     }
 
+
+    static async afficherExamens(id_concours, nomConcours) {
+
+        const token = AdminController.getToken();
+
+        const res = await ExamenModel.getExamensByConcours(
+            id_concours,
+            token
+        );
+
+        if (!res.ok) {
+
+            Swal.fire(
+                "Erreur",
+                res.data?.error || "Impossible de charger les examens",
+                "error"
+            );
+
+            return;
+        }
+
+        const examens = res.data.data || [];
+
+        document.getElementById("titreModalExamens").textContent =
+            "Examens - " + nomConcours;
+
+        const tbody = document.getElementById("tbodyExamens");
+
+        tbody.innerHTML = "";
+
+        if (examens.length === 0) {
+
+            tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="text-center">
+                    Aucun examen programmé pour ce concours
+                </td>
+            </tr>
+        `;
+
+        } else {
+
+            examens.forEach((examen, index) => {
+
+                const date = examen.date_examen
+                    ? examen.date_examen.split("T")[0]
+                    : "-";
+
+                const heure = examen.heure
+                    ? examen.heure.substring(11, 16)
+                    : "-";
+
+                tbody.innerHTML += `
+                <tr>
+
+                    <td class="text-center">
+                        ${index + 1}
+                    </td>
+
+                    <td class="text-center">
+                        ${examen.intitule || "-"}
+                    </td>
+
+                    <td class="text-center">
+                        ${examen.type_examen || "-"}
+                    </td>
+
+                    <td class="text-center">
+                        ${examen.coefficient ?? "-"}
+                    </td>
+
+                    <td class="text-center">
+                        ${date}
+                    </td>
+
+                    <td class="text-center">
+                        ${heure}
+                    </td>
+
+                    <td class="text-center">
+                        ${examen.lieu || "-"}
+                    </td>
+
+                </tr>
+            `;
+            });
+        }
+
+        const modal = new bootstrap.Modal(
+            document.getElementById("modalExamens")
+        );
+
+        modal.show();
+    }
+
+    static bindEvents() {
+
+        document.addEventListener("click", async (e) => {
+
+            // ==============================
+            // EXAMENS
+            // ==============================
+
+            const btnExamen =
+                e.target.closest(".btn-examens");
+
+            if (btnExamen) {
+
+                const id = btnExamen.dataset.id;
+                const nom = btnExamen.dataset.nom;
+
+                await this.afficherExamens(id, nom);
+
+                return;
+            }
+
+
+        });
+    }
 }

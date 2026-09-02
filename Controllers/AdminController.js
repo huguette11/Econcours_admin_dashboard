@@ -1,4 +1,5 @@
 import AdminModel from "../models/AdminModel.js";
+import Alert from "../pages/assets/utils/alert.js";
 
 export default class AdminController {
 
@@ -46,7 +47,7 @@ export default class AdminController {
                 mot_de_passe: formData.get("mot_de_passe")
             };
 
-            console.log("DATA ENVOYEES :", data);
+            //console.log("DATA ENVOYEES :", data);
 
             await this.register(data);
 
@@ -57,16 +58,16 @@ export default class AdminController {
 
         const res = await AdminModel.register(data);
 
-        console.log("REPONSE REGISTER :", res);
+        //console.log("REPONSE REGISTER :", res);
 
         if (!res.ok) {
 
-            alert(res.data.error || res.data.message || "Erreur inscription");
+            Alert.error(res.data.error || res.data.message || "Erreur inscription");
 
             return false;
         }
 
-        alert(res.data.message);
+        Alert.success(res.data.message);
 
         window.location.href = "../login.php";
 
@@ -88,66 +89,56 @@ export default class AdminController {
             const email = formData.get("email");
             const password = formData.get("mot_de_passe");
 
-            console.log("LOGIN DATA :", {
-                email,
-                password
-            });
+            // console.log("LOGIN DATA :", {
+            //     email,
+            //     password
+            // });
 
             await this.login(email, password);
 
         });
     }
 
+
     static async login(email, mot_de_passe) {
+        const errorEl = document.getElementById("formError");
 
-        const res = await AdminModel.login({
-            email,
-            mot_de_passe
-        });
+        errorEl.style.display = "none";
+        errorEl.textContent = "";
 
-        if (!res.ok) {
-            alert(res.data.error || res.data.message || "Erreur connexion");
+        try {
+            const res = await AdminModel.login({
+                email,
+                mot_de_passe
+            });
+
+            if (!res.ok) {
+                errorEl.style.display = "block";
+                errorEl.textContent = res.data.error || "Erreur connexion";
+                return false;
+            }
+
+            // SUCCESS
+            localStorage.setItem("admin_token", res.data.token);
+
+            localStorage.setItem(
+                "admin",
+                JSON.stringify(res.data.admin)
+            );
+
+            window.location.href = "views/dashboard.php";
+
+            return true;
+
+        } catch (err) {
+            console.log(err);
+
+            errorEl.style.display = "block";
+            errorEl.textContent = "Erreur serveur";
+
             return false;
         }
-
-        this.saveToken(res.data.token);
-
-        // ADMIN
-        console.log(res.data)
-        localStorage.setItem(
-            "admin",
-            JSON.stringify(res.data.admin)
-        );
-
-        // localStorage.setItem(
-        //     "id_admin",
-        //     res.data.admin.id_admin
-        // );
-
-        window.location.href = "views/dashboard.php";
-
-        return true;
     }
-
-    // static async GetAllConcours(req, res) {
-
-    //     try {
-
-    //         const concours = await Concours.findAll();
-
-    //         res.json({
-    //             ok: true,
-    //             data: concours
-    //         });
-
-    //     } catch (error) {
-
-    //         res.status(500).json({
-    //             ok: false,
-    //             message: error.message
-    //         });
-    //     }
-    // }
 
     static async loadDashboard() {
 
@@ -156,7 +147,7 @@ export default class AdminController {
         const res = await AdminModel.getDashboard(token);
 
         if (!res.ok) {
-            alert("Erreur chargement dashboard");
+            Alert.error("Erreur chargement dashboard");
             return null;
         }
 
@@ -222,7 +213,21 @@ export default class AdminController {
 
         $("#adminTable").DataTable({
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
             }
         });
     }
@@ -438,8 +443,8 @@ export default class AdminController {
 
         // document.getElementById("profil_role").textContent =
         //     admin.role;
-        
-            
+
+
 
         const nom = admin.nom || "";
         const prenom = admin.prenom || "";

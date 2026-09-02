@@ -9,6 +9,10 @@ export default class DashboardController {
 
         const res = await DashboardModel.dashboard(token);
 
+        console.log(res);
+        console.log(res.data);
+        console.log(res.data.data);
+
         if (!res.ok) return;
 
         const data = res.data.data;
@@ -27,6 +31,9 @@ export default class DashboardController {
 
         document.getElementById("totalCandidats").textContent =
             totalCandidats;
+
+        document.getElementById("totalCandidat").textContent =
+            data.totalCandidats;
 
         document.getElementById("totalPaiements").textContent =
             totalPaiements;
@@ -82,7 +89,8 @@ export default class DashboardController {
             },
 
             options: {
-                responsive: true
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
     }
@@ -134,6 +142,7 @@ export default class DashboardController {
             options: {
 
                 responsive: true,
+                maintainAspectRatio: false,
 
                 plugins: {
 

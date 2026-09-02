@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -18,9 +18,9 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="../css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../pages/assets/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body id="page-top">
@@ -50,7 +50,7 @@
 
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Nombre total de candidats
+                                                Nombre de candidats inscrits à des concours
                                             </div>
 
                                             <div id="totalCandidats"
@@ -98,16 +98,16 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
 
-                                        <!-- <div class="col mr-2">
+                                        <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Nombre total d'inscriptions validées
+                                                Nombre total de candidat
                                             </div>
 
-                                            <div id="nb_inscriptions_valides"
+                                            <div id="totalCandidat"
                                                 style="font-size: 2rem; font-weight: bold;">
                                                 ...
                                             </div>
-                                        </div> -->
+                                        </div>
 
                                         <div class="col-auto">
                                             <i class="fas fa-file-alt fa-2x text-gray-300"></i>
@@ -152,7 +152,7 @@
                                         Candidats par concours
                                     </h6>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body chart-container">
                                     <canvas id="concoursChart"></canvas>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
                                         Répartition des candidats
                                     </h6>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body chart-container">
                                     <canvas id="candidatPieChart"></canvas>
                                 </div>
                             </div>

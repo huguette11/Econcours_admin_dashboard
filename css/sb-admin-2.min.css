@@ -3309,19 +3309,19 @@ fieldset:disabled a.btn {
 
 .btn-link {
     font-weight: 400;
-    color: #4e73df;
+    color: #03572A;
     text-decoration: none
 }
 
 .btn-link:hover {
-    color: #224abe;
+    color: #03572A;
     text-decoration: underline
 }
 
-.btn-link.focus,
+/* .btn-link.focus,
 .btn-link:focus {
     text-decoration: underline
-}
+} */
 
 .btn-link.disabled,
 .btn-link:disabled {
@@ -11370,18 +11370,18 @@ a:focus {
     height: 4.375rem
 }
 
-.topbar #sidebarToggleTop {
+/*.topbar #sidebarToggleTop {
     height: 2.5rem;
     width: 2.5rem
-}
+} 
 
-.topbar #sidebarToggleTop:hover {
+ .topbar #sidebarToggleTop:hover {
     background-color: #eaecf4
 }
 
 .topbar #sidebarToggleTop:active {
     background-color: #dddfeb
-}
+} */
 
 .topbar .navbar-search {
     width: 25rem

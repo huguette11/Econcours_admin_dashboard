@@ -20,7 +20,7 @@ export default class CandidatController {
 
         if (!res.ok) {
             console.log(res.data);
-            alert("Erreur chargement candidats");
+            Alert.error("Erreur chargement candidats");
             return [];
         }
 
@@ -113,9 +113,29 @@ export default class CandidatController {
 
         $('#dataTable').DataTable({
             destroy: true,
-            pageLength: 10
+            pageLength: 10,
+
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            }
         });
+
     }
+
 
     static initDeleteButtons() {
 
@@ -198,7 +218,6 @@ export default class CandidatController {
                 };
 
                 const token = AdminController.getToken();
-
                 const res = await CandidatModel.updateCandidat(token, id, data);
 
                 if (!res.ok) {
@@ -228,20 +247,6 @@ export default class CandidatController {
 
     }
 
-
-    // static async getDetail(id) {
-
-    //     const token = AdminController.getToken();
-
-    //     const res = await CandidatModel.getDetailCandidat(token, id);
-
-    //     if (!res.ok) {
-    //         alert("Erreur détail candidat");
-    //         return null;
-    //     }
-
-    //     return res.data;
-    // }
 
     static initDetails() {
 
@@ -396,8 +401,8 @@ ${candidat.pays_naissance}
 <h5>
 Concours inscrits
 </h5>
-
-<table class="table table-bordered">
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
 
 <thead>
 
@@ -418,6 +423,8 @@ ${concoursHTML}
 </tbody>
 
 </table>
+</div>
+
 `;
 
             $("#detailCandidatModal").modal("show");
@@ -450,11 +457,11 @@ ${concoursHTML}
             const res = await CandidatModel.createCandidat(token, data);
 
             if (!res.ok) {
-                Swal.fire("Erreur", res.data.error || "Erreur création", "error");
+                Alert.error(res.data.error || "Erreur création");
                 return;
             }
 
-            alert("Succès", res.data.message, "success");
+            Alert.success(res.data.message || "Candidat créé avec succès");
 
             // fermer modal
             $('#ajouter_candidat').modal('hide');

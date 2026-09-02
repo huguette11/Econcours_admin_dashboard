@@ -1,17 +1,12 @@
 <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion sidebar" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.php">
-        <!-- <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-bus"></i>
-
-
-        </div> -->
-        <!-- <div class="sidebar-brand-text mx-3">BI - TRAVEL</sup></div> -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+       
         <div class="logo">
-        <img src="../pages/assets/image/armoiries-1.png" alt="logo" height="40">
-        E-CONCOURS
-    </div>
+            <img src="../pages/assets/image/armoiries-1.png" alt="logo" height="40">
+           <div style="margin-top: 6px;">E-CONCOURS</div>
+        </div>
     </a>
 
     <!-- Divider -->

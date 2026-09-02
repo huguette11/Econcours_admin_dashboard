@@ -222,8 +222,31 @@ export default class InscriptionController {
         }
 
         $("#inscriptionTable").DataTable({
+            destroy: true,
+            responsive: true,
+            paging: true,
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 100],
+            searching: true,
+            ordering: true,
+            info: true,
+
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+            
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
             }
         });
     }
@@ -350,7 +373,7 @@ export default class InscriptionController {
         </div>
 
         <hr>
-
+        <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -365,6 +388,7 @@ export default class InscriptionController {
             </thead>
             <tbody>${concoursHTML}</tbody>
         </table>
+        </div>
     `;
 
         $("#detailInscriptionModal").modal("show");

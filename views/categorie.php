@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>CATEGORIE</title>
 
     <!-- Custom fonts for this template -->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -23,6 +23,9 @@
 
     <!-- Custom styles for this page -->
     <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.dataTables.min.css">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php include("inclusions_haut.php") ?>
 </head>
@@ -84,7 +87,8 @@
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-striped" id="dataTable" width="100%" cellspacing="0">
+                                    <table class="table table-bordered table-striped" id="dataTable" width="100%"
+                                        cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
@@ -144,30 +148,63 @@
 
     <!-- Custom scripts for all pages-->
     <script src="../js/sb-admin-2.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const desktopToggle = document.getElementById("sidebarToggle");
+            const mobileToggle = document.getElementById("sidebarToggleTop");
+
+            function isMobile() {
+                return window.innerWidth < 768;
+            }
+
+            function update() {
+                if (isMobile()) {
+                    desktopToggle?.setAttribute("disabled", "true");
+                    desktopToggle?.style.setProperty("pointer-events", "none");
+
+                    mobileToggle?.removeAttribute("disabled");
+                    mobileToggle?.style.removeProperty("pointer-events");
+                } else {
+                    mobileToggle?.setAttribute("disabled", "true");
+                    mobileToggle?.style.setProperty("pointer-events", "none");
+
+                    desktopToggle?.removeAttribute("disabled");
+                    desktopToggle?.style.removeProperty("pointer-events");
+                }
+            }
+
+            update();
+            window.addEventListener("resize", update);
+        });
+    </script>
 
     <!-- Page level plugins -->
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.print.min.js"></script>
     <?php include('modals/modal_categorie.php'); ?>
     <script type="module">
-
-    import CategorieController from "../controllers/CategorieController.js";
-    import AdminController from "../Controllers/AdminController.js";
-    document.addEventListener("DOMContentLoaded", () => {
-        CategorieController.initDataTable();
-        CategorieController.initCreateCategorie();
-        CategorieController.initEditButtons();
-        CategorieController.initUpdateCategorie();
-        CategorieController.initDeleteButtons();
-        AdminController.initLogout();
-    });
-
-</script>
-
-
-
-
+        import CategorieController from "../controllers/CategorieController.js";
+        import AdminController from "../Controllers/AdminController.js";
+        document.addEventListener("DOMContentLoaded", () => {
+            CategorieController.initDataTable();
+            CategorieController.initCreateCategorie();
+            CategorieController.initEditButtons();
+            CategorieController.initUpdateCategorie();
+            CategorieController.initDeleteButtons();
+            AdminController.initLogout();
+        });
+    </script>
 
 </body>
 

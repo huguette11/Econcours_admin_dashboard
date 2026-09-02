@@ -8,7 +8,7 @@ export default class DashboardModel {
             "http://localhost:4000/api/admin/concours/candidat-by-concours",
             {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    "Authorization": "Bearer " + token
                 }
             }
         );
@@ -25,7 +25,7 @@ export default class DashboardModel {
             "http://localhost:4000/api/admin/concours/circulaire",
             {
                 headers: {
-                    Authorization: `Bearer ${token}`
+                    "Authorization": "Bearer " + token
                 }
             }
         );

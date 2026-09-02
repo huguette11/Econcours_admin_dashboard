@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Tables</title>
+    <title>INSCRIPTIONS</title>
 
     <!-- Custom fonts for this template -->
     <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -23,6 +23,8 @@
 
     <!-- Custom styles for this page -->
     <link href="../vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.5/css/buttons.dataTables.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <?php include("inclusions_haut.php") ?>
@@ -91,7 +93,6 @@
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom du candidat</th>
                                                 <th class="text-center">Concours</th>
-                                                <!-- <th class="text-center">Modifier</th> -->
                                                 <th class="text-center">Supprimer</th>
                                                 <th class="text-center">Voir détails</th>
 
@@ -101,8 +102,7 @@
                                             <tr>
                                                 <th class="text-center">N°</th>
                                                 <th class="text-center">Nom du candidat</th>
-                                                <th class="text-center">Concours</th>
-                                                <!-- <th class="text-center">Modifier</th> -->
+                                                <th class="text-center">Concours</th> 
                                                 <th class="text-center">Supprimer</th>
                                                 <th class="text-center">Voir détails</th>
                                         </tfoot>
@@ -151,6 +151,18 @@
     <!-- Page level plugins -->
     <script src="../vendor/datatables/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.5/js/buttons.print.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <?php include('modals/modal_inscription.php'); ?>

@@ -122,10 +122,31 @@ export default class CentreController {
         }
 
         $("#dataTable").DataTable({
-            destroy: true,
             responsive: true,
+            paging: true,
             pageLength: 10,
-            order: [[0, "asc"]]
+            lengthMenu: [10, 25, 50, 100],
+            searching: true,
+            ordering: true,
+            info: true,
+
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
+            }
         });
     }
 

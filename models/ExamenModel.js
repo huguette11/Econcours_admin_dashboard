@@ -20,11 +20,16 @@ export default class ExamenModel {
         };
     }
 
-    static async getExamensByConcours(token, id_concours) {
-        const res = await fetch(`${API_URL}/examens/concours/${id_concours}`, {
+    static async getAllExamens(token) {
+
+        const res = await fetch(`${API_URL}/examen/list-exam`, {
+
+            method: "GET",
+
             headers: {
                 "Authorization": "Bearer " + token
             }
+
         });
 
         const result = await res.json();
@@ -33,6 +38,7 @@ export default class ExamenModel {
             ok: res.ok,
             data: result
         };
+
     }
 
     static async getDetailExamen(token, id_examen) {
@@ -50,31 +56,19 @@ export default class ExamenModel {
         };
     }
 
-    static async updateExamen(token, id_examen, data) {
-        const res = await fetch(`${API_URL}/examens/${id_examen}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
-            },
-            body: JSON.stringify(data)
-        });
+    static async updateExamen(id_examen, token, data) {
 
-        const result = await res.json();
-
-        return {
-            ok: res.ok,
-            data: result
-        };
-    }
-
-    static async deleteExamen(token, id_examen) {
-        const res = await fetch(`${API_URL}/examens/${id_examen}`, {
-            method: "DELETE",
-            headers: {
-                "Authorization": "Bearer " + token
+        const res = await fetch(
+            `${API_URL}/examens/${id_examen}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(data)
             }
-        });
+        );
 
         const result = await res.json();
 
@@ -84,14 +78,37 @@ export default class ExamenModel {
         };
     }
 
-    static async uploadQuestion(token, formData) {
-        const res = await fetch(`${API_URL}/upload-exam-question`, {
-            method: "POST",
-            headers: {
-                "Authorization": "Bearer " + token
-            },
-            body: formData
-        });
+    static async deleteExamen(id_examen, token) {
+
+        const res = await fetch(
+            `${API_URL}/examens/${id_examen}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+
+        const result = await res.json();
+
+        return {
+            ok: res.ok,
+            data: result
+        };
+    }
+
+    static async getExamensByConcours(id_concours, token) {
+
+        const res = await fetch(
+            `${API_URL}/examens/concours/${id_concours}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
 
         const result = await res.json();
 

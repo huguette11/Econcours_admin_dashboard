@@ -78,7 +78,20 @@ export default class PaiementController {
 
         $("#paiementTable").DataTable({
             language: {
-                url: "//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+                url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
             }
         });
     }
@@ -143,8 +156,8 @@ export default class PaiementController {
         <hr>
 
         <h5>Détail des paiements</h5>
-
-        <table class="table table-bordered">
+        <div class="table-responsive">
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -156,6 +169,7 @@ export default class PaiementController {
                 </tr>
             </thead>
             <tbody>
+            </div>
     `;
 
         paiements.forEach(p => {

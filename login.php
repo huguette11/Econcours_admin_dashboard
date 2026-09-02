@@ -46,18 +46,7 @@
 
                 <!-- Bouton -->
                 <button type="submit" class="btn-primary">Se connecter</button>
-
-                <!-- Liens oubli -->
-                <div class="forgot-links">
-                    <a href="#"><i class="fas fa-key"></i> Mot de passe oublié ?</a>
-                    <!-- <a href="#"><i class="fas fa-phone"></i> Numéro oublié ?</a> -->
-                </div>
-
-                <!-- Création compte -->
-                <div class="register-link">
-                    <p>Vous n'avez pas de compte ?</p>
-                    <a href="views/register.php">Créer un compte</a>
-                </div>
+                <p id="formError" class="form-error"></p>
 
             </form>
         </div>

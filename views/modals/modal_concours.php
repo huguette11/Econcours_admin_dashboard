@@ -229,3 +229,112 @@
     </div>
 
 </div>
+
+<div class="modal fade" id="modalCandidats">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 id="titreModal">Liste des candidats</h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">N°</th>
+                                <th class="text-center">Nom</th>
+                                <th class="text-center">Prénom</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Statut d'inscription</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center" id="tbodyCandidats"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalExamens" tabindex="-1">
+
+    <div class="modal-dialog modal-xl">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="titreModalExamens">
+                    Examens
+                </h5>
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal">
+
+                    <span>&times;</span>
+
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered">
+
+                        <thead>
+
+                            <tr>
+
+                                <th class="text-center">N°</th>
+
+                                <th class="text-center">
+                                    Intitulé
+                                </th>
+
+                                <th class="text-center">
+                                    Type
+                                </th>
+
+                                <th class="text-center">
+                                    Coefficient
+                                </th>
+
+                                <th class="text-center">
+                                    Date
+                                </th>
+
+                                <th class="text-center">
+                                    Heure
+                                </th>
+
+                                <th class="text-center">
+                                    Lieu
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tbodyExamens">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

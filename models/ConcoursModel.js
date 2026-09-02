@@ -4,6 +4,7 @@ export default class ConcoursModel {
 
     static async getAllConcours(token) {
         const res = await fetch(`${API_URL}/concours`, {
+            method: "GET",
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -19,6 +20,7 @@ export default class ConcoursModel {
 
     static async getDetailConcours(token, id) {
         const res = await fetch(`${API_URL}/concours/detail/${id}`, {
+            method: "GET",
             headers: {
                 "Authorization": "Bearer " + token
             }
@@ -110,6 +112,23 @@ export default class ConcoursModel {
         return {
             ok: res.ok,
             data: result
+        };
+    }
+
+    static async getCandidatsConcours(token, id_concours) {
+
+        const res = await fetch(
+            `${API_URL}/inscriptions/concours-candidat/${id_concours}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + token
+                }
+            }
+        );
+
+        return {
+            ok: res.ok,
+            data: await res.json()
         };
     }
 }
