@@ -208,6 +208,11 @@
         import DashboardController from "../controllers/DashboardController.js";
         import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
+            const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
             DashboardController.loadDashboard();
             DashboardController.loadPieChart();
             AdminController.initLogout();

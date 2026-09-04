@@ -4,74 +4,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - E-Concours</title>
+
+    <title>Connexion administrateur - E-CONCOURS</title>
+
     <link rel="stylesheet" href="pages/assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
-<body>
+<body class="admin-login-page">
 
+    <main class="admin-login-main">
 
-    <section class="login-page">
-        <div class="login-container">
+        <div class="admin-login-container">
 
-            <div class="login-header">
-                <i class="fas fa-user-circle"></i>
-                <h1>Connexion à mon profil</h1>
-                <p>Accédez à votre espace personnel</p>
-            </div>
+            <!-- PARTIE IDENTITÉ -->
+            <section class="admin-login-brand">
 
-            <form class="login-form" id="loginForm">
-
-                <!-- Email -->
-                <div class="form-group">
-                    <label>Email</label>
-                    <div class="input-group">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" placeholder="votre@email.com" name="email" required>
-                    </div>
+                <div class="admin-login-logo">
+                    <img src="pages/assets/image/armoirie.jpg"
+                        alt="Armoiries du Mali">
                 </div>
 
-                <!-- Mot de passe -->
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <div class="input-group">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="password" placeholder="••••••••" name="mot_de_passe" required>
-                        <i class="fas fa-eye toggle-password" onclick="togglePassword()"></i>
-                    </div>
+                <div class="admin-login-brand-text">
+                    <span class="admin-login-country">
+                        RÉPUBLIQUE DU MALI
+                    </span>
+
+                    <span class="admin-login-divider"></span>
+
+                    <h1>E-CONCOURS</h1>
+
+                    <p>
+                        Plateforme de gestion des concours
+                    </p>
                 </div>
 
-                <p id="formError" class="form-error"></p>
+                <div class="admin-login-brand-footer">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Accès sécurisé à l'espace d'administration</span>
+                </div>
 
-                <!-- Bouton -->
-                <button type="submit" class="btn-primary">Se connecter</button>
-                <p id="formError" class="form-error"></p>
+            </section>
 
-            </form>
+
+            <!-- CARTE DE CONNEXION -->
+            <section class="admin-login-card">
+
+                <div class="admin-login-header">
+
+                    <div class="admin-login-icon">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+
+                    <div>
+                        <p class="admin-login-eyebrow">
+                            ESPACE ADMINISTRATION
+                        </p>
+
+                        <h2>
+                            Connexion
+                        </h2>
+
+                        <p class="admin-login-subtitle">
+                            Connectez-vous pour accéder à votre espace de gestion.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <form class="admin-login-form" id="loginForm">
+
+                    <!-- EMAIL -->
+                    <div class="admin-form-group">
+
+                        <label for="email">
+                            Adresse e-mail
+                        </label>
+
+                        <div class="admin-input-wrapper">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="votre@email.com"
+                                autocomplete="email"
+                                required>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MOT DE PASSE -->
+                    <div class="admin-form-group">
+
+                        <div class="admin-label-row">
+                            <label for="password">
+                                Mot de passe
+                            </label>
+                        </div>
+
+                        <div class="admin-input-wrapper">
+
+                            <i class="fa-solid fa-lock"></i>
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="mot_de_passe"
+                                placeholder="Votre mot de passe"
+                                autocomplete="current-password"
+                                required>
+
+                            <button
+                                type="button"
+                                class="admin-toggle-password"
+                                onclick="togglePassword()"
+                                aria-label="Afficher ou masquer le mot de passe">
+
+                                <i class="fa-solid fa-eye"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MESSAGE ERREUR -->
+                    <p id="formError" class="admin-form-error"></p>
+
+
+                    <!-- BOUTON -->
+                    <button
+                        type="submit"
+                        class="admin-login-button">
+
+                        <span>Se connecter</span>
+
+                        <i class="fa-solid fa-arrow-right"></i>
+
+                    </button>
+
+                </form>
+
+
+                <!-- SÉCURITÉ -->
+                <div class="admin-login-security">
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    <div>
+                        <strong>Connexion sécurisée</strong>
+                        <span>
+                            Vos informations sont protégées.
+                        </span>
+                    </div>
+
+                </div>
+
+            </section>
+
         </div>
-    </section>
 
-<script type="module">
-    import AdminController from "./Controllers/AdminController.js";
+    </main>
 
-    document.addEventListener("DOMContentLoaded", () => {
 
-        const form = document.getElementById("loginForm");
+    <script>
+        function togglePassword() {
 
-        form.addEventListener("submit", async (e) => {
+            const password = document.getElementById("password");
+            const button = document.querySelector(".admin-toggle-password i");
 
-            e.preventDefault();
+            if (password.type === "password") {
 
-            const email = form.email.value;
-            const password = form.mot_de_passe.value;
+                password.type = "text";
 
-            await AdminController.login(email, password);
+                button.classList.remove("fa-eye");
+                button.classList.add("fa-eye-slash");
+
+            } else {
+
+                password.type = "password";
+
+                button.classList.remove("fa-eye-slash");
+                button.classList.add("fa-eye");
+
+            }
+        }
+    </script>
+
+
+    <script type="module">
+        import AdminController from "./Controllers/AdminController.js";
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            AdminController.initLogin();
 
         });
-
-    });
-</script>
+    </script>
 
 </body>
 

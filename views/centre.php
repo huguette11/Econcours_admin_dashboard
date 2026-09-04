@@ -168,11 +168,18 @@
     <script type="module">
         import CentreController from '../Controllers/CentreController.js';
         import AdminController from "../Controllers/AdminController.js";
+        document.addEventListener("DOMContentLoaded", () => {
+        const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
         CentreController.initCreateCentre();
         CentreController.initDataTable();
         CentreController.initEditCentre();
         CentreController.initDeleteCentre();
         AdminController.initLogout();
+        })
     </script>
 
 

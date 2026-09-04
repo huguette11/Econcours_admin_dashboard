@@ -84,7 +84,7 @@
         import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
             AdminController.initRegister();
-            AdminController.initLogout();
+            // AdminController.initLogout();
         });
     </script>
 

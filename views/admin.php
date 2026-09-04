@@ -175,6 +175,12 @@
         import AdminController from "../Controllers/AdminController.js";
 
         document.addEventListener("DOMContentLoaded", () => {
+            const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
+            
             AdminController.loadAdmins();
             AdminController.initCreateAdmin();
             AdminController.initDeleteAdmin();

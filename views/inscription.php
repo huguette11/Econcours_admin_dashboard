@@ -170,6 +170,12 @@
         import InscriptionController from "../controllers/InscriptionController.js";
         import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
+            const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
+            
             InscriptionController.initInscriptionConcours();
             InscriptionController.loadCentres();
             InscriptionController.loadConcours();

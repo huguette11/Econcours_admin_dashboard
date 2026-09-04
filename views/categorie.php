@@ -197,6 +197,13 @@
         import CategorieController from "../controllers/CategorieController.js";
         import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
+
+            const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
+
             CategorieController.initDataTable();
             CategorieController.initCreateCategorie();
             CategorieController.initEditButtons();

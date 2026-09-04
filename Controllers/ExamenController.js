@@ -22,8 +22,6 @@ export default class ExamenController {
 
         this.initDataTable();
 
-
-
     }
 
 
@@ -31,19 +29,56 @@ export default class ExamenController {
     // GET ALL EXAMENS
     // =========================================
 
+    // static async getAll() {
+
+    //     const token = AdminController.getToken();
+
+    //     if (!token) {
+
+    //         console.warn("Aucun token administrateur");
+
+    //         return [];
+
+    //     }
+
+    //     const res = await ExamenModel.getAllExamens(token);
+
+    //     if (!res.ok) {
+
+    //         console.error(
+    //             res.data?.error || "Erreur chargement examens"
+    //         );
+
+    //         Swal.fire({
+    //             icon: "error",
+    //             title: "Erreur",
+    //             text: res.data?.error || "Impossible de charger les examens"
+    //         });
+
+    //         return [];
+
+    //     }
+
+    //     return res.data;
+
+    // }
+
     static async getAll() {
 
         const token = AdminController.getToken();
 
         if (!token) {
-
             console.warn("Aucun token administrateur");
-
             return [];
-
         }
 
         const res = await ExamenModel.getAllExamens(token);
+
+        console.log("Réponse API examens :", res);
+        console.log("res.ok :", res.ok);
+        console.log("res.data :", res.data);
+        console.log("Type res.data :", typeof res.data);
+        console.log("Est un tableau :", Array.isArray(res.data));
 
         if (!res.ok) {
 
@@ -58,11 +93,9 @@ export default class ExamenController {
             });
 
             return [];
-
         }
 
         return res.data;
-
     }
 
     // =========================================
@@ -83,13 +116,12 @@ export default class ExamenController {
 
         }
 
-        const response = await this.getAll();
+        const examens = await this.getAll();
 
         // Backend : { data: examens }
-        const examens = response.data || [];
+        // const examens = response.data || [];
 
         console.log("LISTE EXAMENS :", examens);
-
 
         // Détruire l'ancienne DataTable
         if ($.fn.DataTable.isDataTable("#dataTable")) {
@@ -215,6 +247,19 @@ export default class ExamenController {
 
             language: {
                 url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
+            },
+
+            layout: {
+                topStart: [
+                    'pageLength',
+                    {
+                        buttons: ['copy', 'excel', 'csv', 'pdf']
+                    }
+                ],
+                topEnd: 'search',
+
+                bottomStart: 'info',
+                bottomEnd: 'paging'
             }
 
         });

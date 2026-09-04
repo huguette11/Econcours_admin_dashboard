@@ -12,15 +12,18 @@ export default class AdminController {
     }
 
     static logout() {
+
         localStorage.removeItem("admin_token");
-        window.location.href = "login.php";
+        localStorage.removeItem("admin");
+
+        window.location.href = "../login.php";
     }
 
     static checkAuth() {
         const token = this.getToken();
 
         if (!token) {
-            window.location.href = "login.php";
+            window.location.href = "../login.php";
         }
 
         return token;
@@ -118,6 +121,7 @@ export default class AdminController {
                 return false;
             }
 
+
             // SUCCESS
             localStorage.setItem("admin_token", res.data.token);
 
@@ -126,7 +130,11 @@ export default class AdminController {
                 JSON.stringify(res.data.admin)
             );
 
+
+
             window.location.href = "views/dashboard.php";
+
+
 
             return true;
 
@@ -401,7 +409,7 @@ export default class AdminController {
 
                 if (result.isConfirmed) {
 
-                    localStorage.removeItem("token");
+                    localStorage.removeItem("admin_token");
                     localStorage.removeItem("admin");
 
                     window.location.href = "../login.php";

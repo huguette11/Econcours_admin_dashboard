@@ -126,7 +126,7 @@
                                                 Voir la liste des candidats
                                             </th>
 
-                                             <th class="text-center">
+                                            <th class="text-center">
                                                 Voir la liste des examens
                                             </th>
 
@@ -177,7 +177,7 @@
 
     <script src="../vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-    
+
 
     <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.2.5/js/dataTables.buttons.min.js"></script>
@@ -196,6 +196,11 @@
         import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", async () => {
             // ConcoursController.getAll();
+            const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
             ConcoursController.initDataTable();
             ConcoursController.initCreateConcours();
             ConcoursController.initEditConcours();
@@ -208,9 +213,9 @@
         });
     </script>
 
-     <!-- Modal -->
+    <!-- Modal -->
     <?php include("modals/modal_concours.php"); ?>
-    
+
 </body>
 
 </html>

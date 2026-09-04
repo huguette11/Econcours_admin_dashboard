@@ -182,6 +182,12 @@
             "DOMContentLoaded",
             async () => {
 
+                const token = AdminController.checkAuth();
+
+                if (!token) {
+                    return;
+                }
+
                 await ExamenController.init();
 
                 AdminController.initLogout();

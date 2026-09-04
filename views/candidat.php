@@ -195,6 +195,13 @@
         import CandidatController from "../Controllers/CandidatController.js";
         import AdminController from "../Controllers/AdminController.js";
         document.addEventListener("DOMContentLoaded", () => {
+
+        const token = AdminController.checkAuth();
+
+            if (!token) {
+                return;
+            }
+            
             CandidatController.initDataTable();
             CandidatController.registerCandidat();
             CandidatController.initDeleteButtons();

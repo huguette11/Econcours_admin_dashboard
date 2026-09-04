@@ -7,7 +7,7 @@ export default class AdminModel {
         const res = await fetch(`${API_URL}/login`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         });
@@ -24,7 +24,7 @@ export default class AdminModel {
         const res = await fetch(`${API_URL}/register`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         });

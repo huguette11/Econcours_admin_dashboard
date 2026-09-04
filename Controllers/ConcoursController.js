@@ -147,26 +147,26 @@ export default class ConcoursController {
                     </td>
 
                     <td class="text-center">
-    <button
-        class="btn btn-info btn-sm btn-candidats"
-        data-id="${item.id_concours}"
-        data-nom="${item.nom}"
-        title="Voir les candidats"
-    >
-        <i class="fa-solid fa-users"></i>
-    </button>
-</td>
+                        <button
+                            class="btn btn-info btn-sm btn-candidats"
+                            data-id="${item.id_concours}"
+                            data-nom="${item.nom}"
+                            title="Voir les candidats"
+                        >
+                            <i class="fa-solid fa-users"></i>
+                        </button>
+                    </td>
 
-<td class="text-center">
-<button  
-    class="btn btn-warning btn-sm btn-examens"
-    data-id="${item.id_concours}"
-    data-nom="${item.nom}"
-    title="Voir les examens"
->
-    <i class="fa-solid fa-file-pen"></i>
-</button>
-</td>
+                    <td class="text-center">
+                        <button  
+                            class="btn btn-warning btn-sm btn-examens"
+                            data-id="${item.id_concours}"
+                            data-nom="${item.nom}"
+                            title="Voir les examens"
+                        >
+                            <i class="fa-solid fa-file-pen"></i>
+                        </button>
+                    </td>
 
                 </tr>
             `;
@@ -209,28 +209,64 @@ export default class ConcoursController {
 
         document.addEventListener("click", async (e) => {
 
-            const btn = e.target.closest(".btn-candidats");
+            // ==============================
+            // VOIR LES EXAMENS
+            // ==============================
 
-            if (!btn) return;
+            const btnExamen = e.target.closest(".btn-examens");
 
-            const id = btn.dataset.id;
-            const nom = btn.dataset.nom;
+            if (btnExamen) {
 
-            const token = AdminController.getToken();
+                const id = btnExamen.dataset.id;
+                const nom = btnExamen.dataset.nom;
 
-            const res = await ConcoursModel.getCandidatsConcours(token, id);
+                console.log("Bouton examens cliqué :", id, nom);
 
-            if (!res.ok) {
-                Alert.error("Impossible de charger les candidats");
+                await this.afficherExamens(id, nom);
+
                 return;
             }
 
-            console.log(res.data);
 
-            this.afficherModalCandidats(nom, res.data);
+            // ==============================
+            // VOIR LES CANDIDATS
+            // ==============================
+
+            const btnCandidats = e.target.closest(".btn-candidats");
+
+            if (btnCandidats) {
+
+                const id = btnCandidats.dataset.id;
+                const nom = btnCandidats.dataset.nom;
+
+                console.log("Bouton candidats cliqué :", id, nom);
+
+                const token = AdminController.getToken();
+
+                const res = await ConcoursModel.getCandidatsConcours(
+                    token,
+                    id
+                );
+
+                if (!res.ok) {
+                    Alert.error(
+                        res.data?.error ||
+                        "Impossible de charger les candidats"
+                    );
+                    return;
+                }
+
+                console.log("Candidats :", res.data);
+
+                this.afficherModalCandidats(
+                    nom,
+                    res.data
+                );
+
+                return;
+            }
+
         });
-
-
     }
 
     static async afficherModalCandidats(nomConcours, candidats) {
@@ -635,28 +671,4 @@ export default class ConcoursController {
         modal.show();
     }
 
-    static bindEvents() {
-
-        document.addEventListener("click", async (e) => {
-
-            // ==============================
-            // EXAMENS
-            // ==============================
-
-            const btnExamen =
-                e.target.closest(".btn-examens");
-
-            if (btnExamen) {
-
-                const id = btnExamen.dataset.id;
-                const nom = btnExamen.dataset.nom;
-
-                await this.afficherExamens(id, nom);
-
-                return;
-            }
-
-
-        });
-    }
 }
