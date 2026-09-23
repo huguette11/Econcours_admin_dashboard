@@ -649,7 +649,8 @@
 .logo {
   display: flex;
   align-items: left;
-  gap: 12px;
+  height: 40px;
+  gap: 10px;
   font-weight: 700;
   font-size: 15px;
   color: #fff;
