@@ -458,7 +458,7 @@ export default class ExamenController {
 
                 type_examen: type_examen,
 
-                coefficient: Number(coefficient),
+                // coefficient: Number(coefficient),
 
                 date_examen: date_examen,
 
@@ -517,7 +517,7 @@ export default class ExamenController {
 
 
             // Recharger le DataTable
-            await this.initDataTable();
+            this.initDataTable();
 
         });
 
@@ -666,7 +666,7 @@ export default class ExamenController {
 
             $("#modifier_examen").modal("hide");
 
-            await this.initDataTable();
+            this.initDataTable();
 
         });
     }
@@ -750,7 +750,7 @@ export default class ExamenController {
 
 
                 // Recharger le DataTable
-                await this.initDataTable();
+                this.initDataTable();
 
 
             } catch (error) {

@@ -113,7 +113,7 @@ export default class CategorieModel {
 
     static async createCategorie(token, data) {
 
-        const res = await fetch(`${API_URL}`, {
+        const res = await fetch(`${API_URL}/create-categorie`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

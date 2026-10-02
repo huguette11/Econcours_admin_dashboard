@@ -148,7 +148,7 @@
 
             <div class="modal-body">
 
-                <div class="alert alert-primary">
+                <div class="alert alert-success" role="alert">
                     <i class="fa-solid fa-circle-info mr-1"></i>
                     Sélectionnez un fichier Excel contenant la liste à importer.
                 </div>

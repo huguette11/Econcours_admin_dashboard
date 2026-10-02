@@ -81,7 +81,7 @@
 
 
                         <!-- COEFFICIENT -->
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
 
                             <div class="form-group">
 
@@ -96,7 +96,7 @@
 
                             </div>
 
-                        </div>
+                        </div> -->
 
 
                         <!-- DATE -->
@@ -157,7 +157,7 @@
 
 
                         <!-- CONCOURS -->
-                        <div class="col-md-12">
+                        <div class="col-md-6">
 
                             <div class="form-group">
 

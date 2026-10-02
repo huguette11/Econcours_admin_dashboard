@@ -105,7 +105,6 @@ export default class AdminController {
         });
     }
 
-
     static async login(email, mot_de_passe) {
         const errorEl = document.getElementById("formError");
 
@@ -126,22 +125,10 @@ export default class AdminController {
                 return false;
             }
 
-            //const admin = res.data.admin;
-
             localStorage.setItem(
                 "admin_token",
                 res.data.token
             );
-
-            // localStorage.setItem(
-            //     "admin",
-            //     JSON.stringify(admin)
-            // );
-
-            // localStorage.setItem(
-            //     "id_admin",
-            //     admin.id_admin
-            // );
 
             window.location.href = "views/dashboard.php";
 
@@ -156,6 +143,7 @@ export default class AdminController {
             return false;
         }
     }
+
 
     static async loadDashboard() {
 
@@ -176,12 +164,12 @@ export default class AdminController {
 
         return res.data;
     }
-
     static async getAll(params) {
 
         const token = AdminController.getToken();
 
         if (!token) {
+
             console.warn("Aucun token administrateur");
 
             return {
@@ -192,16 +180,10 @@ export default class AdminController {
             };
         }
 
-        const res =
-            await AdminModel.getAllAdmins(
-                token,
-                params
-            );
-
-        // console.log(
-        //     "RÉPONSE API ADMINS :",
-        //     res
-        // );
+        const res = await AdminModel.getAllAdmins(
+            token,
+            params
+        );
 
         if (!res.ok) {
 
@@ -264,27 +246,25 @@ export default class AdminController {
                         draw: data.draw,
                         start: data.start,
                         length: data.length,
-                        search: data.search?.value || ""
+                        search: data.search?.value || "",
+
+                        orderColumn: data.order?.[0]?.column ?? 0,
+                        orderDir: data.order?.[0]?.dir ?? "desc"
                     };
 
                     const result =
-                        await AdminController.getAll(
-                            params
-                        );
+                        await AdminController.getAll(params);
 
                     const admins =
                         Array.isArray(result?.data)
                             ? result.data
                             : [];
 
-
                     const rows = admins.map(
                         (admin, index) => {
 
                             return [
-                                params.start +
-                                index +
-                                1,
+                                params.start + index + 1,
 
                                 admin.nom || "-",
 
@@ -299,29 +279,27 @@ export default class AdminController {
                                 admin.date_creation
                                     ? new Date(
                                         admin.date_creation
-                                    ).toLocaleDateString(
-                                        "fr-FR"
-                                    )
+                                    ).toLocaleDateString("fr-FR")
                                     : "-",
 
                                 `
-                            <button
-                                class="btn btn-warning btn-sm btn-update-admin"
-                                data-id="${admin.id}"
-                                data-nom="${admin.nom || ""}"
-                                data-prenom="${admin.prenom || ""}"
-                                data-role="${admin.role || ""}">
-                                <i class="fa fa-edit"></i>
-                            </button>
-                            `,
+                    <button
+                        class="btn btn-warning btn-sm btn-update-admin"
+                        data-id="${admin.id}"
+                        data-nom="${admin.nom || ""}"
+                        data-prenom="${admin.prenom || ""}"
+                        data-role="${admin.role || ""}">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                    `,
 
                                 `
-                            <button
-                                class="btn btn-danger btn-sm btn-delete-admin"
-                                data-id="${admin.id}">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                            `
+                    <button
+                        class="btn btn-danger btn-sm btn-delete-admin"
+                        data-id="${admin.id}">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                    `
                             ];
                         }
                     );
@@ -339,7 +317,8 @@ export default class AdminController {
                     });
 
                 } catch (error) {
-                    console.log(error);
+
+                    console.error("Erreur DataTable :", error);
 
                     callback({
                         draw: data.draw,
@@ -351,8 +330,7 @@ export default class AdminController {
                     Swal.fire({
                         icon: "error",
                         title: "Erreur",
-                        text:
-                            "Impossible de charger les administrateurs"
+                        text: "Impossible de charger les administrateurs"
                     });
                 }
             },
@@ -617,60 +595,75 @@ export default class AdminController {
         });
     }
 
-    static async loadProfile() {
 
+    static async loadProfile() {
         const token = this.getToken();
 
-        // const id_admin = localStorage.getItem("id_admin");
-
         if (!token) {
-            Swal.fire("Erreur", "Administrateur introuvable", "error");
+            Swal.fire(
+                "Erreur",
+                "Administrateur introuvable",
+                "error"
+            );
             return;
         }
 
-        const res = await AdminModel.getProfile(
-            token,
-           // id_admin
-        );
+        try {
+            const res = await AdminModel.getProfile(token);
 
-        if (!res.ok) {
-            Swal.fire("Erreur", res.data.error, "error");
-            return;
+            if (!res.ok) {
+                Swal.fire(
+                    "Erreur",
+                    res.data.error || "Impossible de récupérer le profil",
+                    "error"
+                );
+                return;
+            }
+
+            const admin = res.data.data;
+
+            const nom = admin.nom || "";
+            const prenom = admin.prenom || "";
+
+            const initials = (
+                nom.charAt(0) + prenom.charAt(0)
+            ).toUpperCase();
+
+            document.getElementById("profileAvatar").textContent =
+                initials;
+
+            document.getElementById("adminNomComplet").textContent =
+                `${nom} ${prenom}`;
+
+            document.getElementById("adminRole").textContent =
+                admin.role || "-";
+
+            document.getElementById("profil_nom").textContent =
+                nom;
+
+            document.getElementById("profil_prenom").textContent =
+                prenom;
+
+            document.getElementById("profil_email").textContent =
+                admin.email || "-";
+
+            document.getElementById("profil_tel").textContent =
+                admin.telephone || "-";
+
+            document.getElementById("profil_role").textContent =
+                admin.role || "-";
+
+        } catch (error) {
+            console.error("Erreur chargement profil :", error);
+
+            Swal.fire(
+                "Erreur",
+                "Impossible de charger le profil",
+                "error"
+            );
         }
-
-        const admin = res.data.data;
-
-        // document.getElementById("profil_nom").textContent =
-        //     admin.nom;
-
-        // document.getElementById("profil_prenom").textContent =
-        //     admin.prenom;
-
-        // document.getElementById("profil_role").textContent =
-        //     admin.role;
-
-
-
-        const nom = admin.nom || "";
-        const prenom = admin.prenom || "";
-
-        // initiales
-        const initials = (nom.charAt(0) + prenom.charAt(0)).toUpperCase();
-
-        // avatar
-        document.getElementById("profileAvatar").textContent = initials;
-
-        // infos header
-        document.getElementById("adminNomComplet").textContent = `${nom} ${prenom}`;
-        document.getElementById("adminRole").textContent = admin.role;
-
-        // champs profil
-        document.getElementById("profil_nom").textContent = nom;
-        document.getElementById("profil_prenom").textContent = prenom;
-        document.getElementById("profil_email").textContent = admin.email;
-        document.getElementById("profil_tel").textContent = admin.telephone || "-";
-        document.getElementById("profil_role").textContent = admin.role;
     }
+
 
     static initImportListe() {
 
@@ -793,4 +786,3 @@ export default class AdminController {
 
 
 }
-

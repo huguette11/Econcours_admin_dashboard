@@ -4,7 +4,7 @@
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
        
         <div class="logo">
-            <img src="../pages/assets/image/armoirie.jpg" alt="logo" height="40">
+            <img src="../pages/assets/image/Flag_of_Mali.svg" alt="logo" height="40">
            <div style="margin-top: 6px;">E-CONCOURS</div>
         </div>
     </a>

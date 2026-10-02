@@ -6,15 +6,6 @@ import AdminController from "./AdminController.js";
 
 export default class InscriptionController {
 
-    // ===== RECHARGEMENT DU DATATABLE =====
-    static reloadTable() {
-        if ($.fn.DataTable.isDataTable("#inscriptionTable")) {
-            // false = on reste sur la page courante
-            $("#inscriptionTable").DataTable().ajax.reload(null, false);
-        }
-    }
-
-    // ===== AJOUT D'UNE INSCRIPTION =====
     static initInscriptionConcours() {
 
         const form = document.getElementById("formInscriptionConcours");
@@ -43,10 +34,12 @@ export default class InscriptionController {
             }
 
             const data = {
-                id_candidat: id_candidat,
+                id_candidat: document.getElementById("id_candidat").value,
                 id_concours: Number(id_concours),
                 id_centre: Number(id_centre)
             };
+
+           // console.log("DATA INSCRIPTION :", data);
 
             const res = await InscriptionModel.inscrireConcours(token, data);
 
@@ -71,12 +64,9 @@ export default class InscriptionController {
 
             $("#ajouter_inscription").modal("hide");
 
-            // Recharge la table après l'ajout
-            InscriptionController.reloadTable();
         });
     }
 
-    // ===== CHARGEMENT DES SELECTS =====
     static async loadConcours() {
 
         const token = AdminController.getToken();
@@ -113,12 +103,14 @@ export default class InscriptionController {
 
         const res = await CandidatModel.getCandidatsForSelect(token);
 
+       // console.log("CANDIDATS :", res);
+
         const select = $("#id_candidat");
 
         select.empty();
 
         select.append(`<option value="">Sélectionnez un candidat</option>`);
-
+       // console.log("Premier candidat :", res.data.data[0]);
         res.data.data.forEach(c => {
 
             select.append(`
@@ -164,15 +156,13 @@ export default class InscriptionController {
             placeholder: "Sélectionnez un centre"
         });
     }
-
-    // ===== APPEL API POUR LE DATATABLE =====
     static async getAll(params) {
 
         const token = AdminController.getToken();
 
         if (!token) {
 
-            window.location.href = "../login.php";
+          window.location.href = "../login.php";
 
             return {
                 draw: params?.draw ?? 0,
@@ -187,6 +177,11 @@ export default class InscriptionController {
                 token,
                 params
             );
+
+        // console.log(
+        //     "RÉPONSE API INSCRIPTIONS :",
+        //     res
+        // );
 
         if (!res.ok) {
 
@@ -207,10 +202,10 @@ export default class InscriptionController {
         return res.data;
     }
 
-    // ===== DATATABLE =====
     static initDataTable() {
 
         if ($.fn.DataTable.isDataTable("#inscriptionTable")) {
+           // console.log("DataTable inscriptions déjà initialisé");
             return;
         }
 
@@ -313,8 +308,6 @@ export default class InscriptionController {
 
                 } catch (error) {
 
-                    console.error("Erreur chargement inscriptions :", error);
-
                     callback({
                         draw: data.draw,
                         recordsTotal: 0,
@@ -356,6 +349,7 @@ export default class InscriptionController {
                     "pageLength",
                     {
                         buttons: [
+
                             {
                                 text: '<i class="fa fa-file-excel"></i> Excel',
                                 className: "btn-export-excel",
@@ -387,37 +381,49 @@ export default class InscriptionController {
         });
     }
 
-    // ===== ÉVÉNEMENTS =====
     static initEvents() {
 
-        // Détail candidat : handler délégué enregistré UNE seule fois
-        $(document).on("click", ".btn-detail-candidat", function () {
+        document.addEventListener("click", async (e) => {
 
-            const idsInscriptions =
-                $(this)
-                    .attr("data-ids")
-                    .split(",")
-                    .filter(Boolean);
+            // ===== DETAIL CANDIDAT =====
+            $(document).on(
+                "click",
+                ".btn-detail-candidat",
+                function () {
 
-            InscriptionController.showDetailCandidat(idsInscriptions);
+                    const idsInscriptions =
+                        $(this)
+                            .attr("data-ids")
+                            .split(",")
+                            .filter(Boolean);
+
+                    // console.log(
+                    //     "IDS INSCRIPTIONS :",
+                    //     idsInscriptions
+                    // );
+
+                    InscriptionController.showDetailCandidat(
+                        idsInscriptions
+                    );
+                }
+            );
+
+            // ===== EDIT INSCRIPTION =====
+            const btnEdit = e.target.closest(".btn-edit-inscription");
+
+            if (btnEdit) {
+                await this.openEditModal(btnEdit);
+                return;
+            }
         });
 
-        // Modifier une inscription
-        $(document).on("click", ".btn-edit-inscription", async function () {
-            await InscriptionController.openEditModal(this);
-        });
 
-        // Enregistrer la modification
-        const btnSave = document.getElementById("btnSaveInscription");
-
-        if (btnSave) {
-            btnSave.addEventListener("click", async () => {
-                await InscriptionController.saveInscription();
+        document.getElementById("btnSaveInscription")
+            .addEventListener("click", async () => {
+                await this.saveInscription();
             });
-        }
     }
 
-    // ===== DÉTAIL D'UN CANDIDAT =====
     static async showDetailCandidat(idsInscriptions) {
 
         const token = AdminController.getToken();
@@ -452,6 +458,11 @@ export default class InscriptionController {
                 }
             });
 
+            // console.log(
+            //     "IDs inscriptions :",
+            //     idsInscriptions
+            // );
+
             const responses = await Promise.all(
                 idsInscriptions.map(
                     idInscription =>
@@ -461,6 +472,11 @@ export default class InscriptionController {
                         )
                 )
             );
+
+            // console.log(
+            //     "DETAILS INSCRIPTIONS :",
+            //     responses
+            // );
 
             Swal.close();
 
@@ -483,6 +499,11 @@ export default class InscriptionController {
             // Le candidat est présent dans chaque DetailInscription
             const candidat = details[0].candidat;
 
+            // console.log(
+            //     "CANDIDAT :",
+            //     candidat
+            // );
+
             const concoursHTML = details
                 .map(d => {
 
@@ -504,6 +525,8 @@ export default class InscriptionController {
                                 )
                                 .join("")
                             : "-";
+
+                   // console.log("INSCRIPTION D :", d);
 
                     return `
                     <tr>
@@ -540,19 +563,22 @@ export default class InscriptionController {
                         </td>
 
                         <td class="text-center">
+
                             <button
-                                class="btn btn-warning btn-sm btn-edit-inscription"
-                                data-id="${d.id_inscription}"
-                                data-statut="${d.statut_inscription || ""}"
-                                data-centre="${d.centre?.id_centre || ""}"
-                                data-concours="${d.concours?.id_concours || ""}"
-                                title="Modifier"
-                            >
-                                <i class="fa fa-edit"></i>
-                            </button>
+    class="btn btn-warning btn-sm btn-edit-inscription"
+    data-id="${d.id_inscription}"
+    data-statut="${d.statut_inscription || ""}"
+    data-centre="${d.centre?.id_centre || ""}"
+    data-concours="${d.concours?.id_concours || ""}"
+    title="Modifier"
+>
+    <i class="fa fa-edit"></i>
+</button>
+
                         </td>
 
                         <td class="text-center">
+
                             <button
                                 class="btn btn-danger btn-sm btn-delete-inscription"
                                 data-id="${d.id_inscription}"
@@ -560,6 +586,7 @@ export default class InscriptionController {
                             >
                                 <i class="fa fa-trash"></i>
                             </button>
+
                         </td>
 
                     </tr>
@@ -663,15 +690,31 @@ export default class InscriptionController {
                 text: "Une erreur est survenue lors du chargement du candidat."
             });
         }
+
     }
 
-    // ===== MODAL DE MODIFICATION =====
     static async openEditModal(btn) {
 
-        const idInscription = btn.dataset.id;
-        const statut = btn.dataset.statut;
-        const idCentre = btn.dataset.centre;
-        const idConcours = btn.dataset.concours;
+        const idInscription =
+            btn.dataset.id;
+
+        const statut =
+            btn.dataset.statut;
+
+        const idCentre =
+            btn.dataset.centre;
+
+        const idConcours =
+            btn.dataset.concours;
+
+
+
+        // console.log({
+        //     idInscription,
+        //     statut,
+        //     idCentre,
+        //     idConcours
+        // });
 
         if (!idConcours) {
             Swal.fire({
@@ -682,9 +725,11 @@ export default class InscriptionController {
             return;
         }
 
-        $("#edit_id_inscription").val(idInscription);
+        $("#edit_id_inscription")
+            .val(idInscription);
 
-        $("#edit_statut").val(statut);
+        $("#edit_statut")
+            .val(statut);
 
         await InscriptionController.loadCentresByConcours(
             idConcours,
@@ -695,10 +740,10 @@ export default class InscriptionController {
             .val(String(idCentre))
             .trigger("change.select2");
 
-        $("#editInscriptionModal").modal("show");
+        $("#editInscriptionModal")
+            .modal("show");
     }
 
-    // ===== ENREGISTRER LA MODIFICATION =====
     static async saveInscription() {
 
         const token = AdminController.getToken();
@@ -720,21 +765,19 @@ export default class InscriptionController {
         Swal.fire("Succès", "Modification enregistrée", "success");
 
         $("#editInscriptionModal").modal("hide");
-        $("#detailInscriptionModal").modal("hide");
 
-        // Recharge la table
-        InscriptionController.reloadTable();
+        await this.getAll();
     }
 
-    // ===== SUPPRESSION =====
     static initDeleteInscription() {
 
         document.addEventListener("click", async (e) => {
 
             const btn = e.target.closest(".btn-delete-inscription");
             if (!btn) return;
-
+           // console.log("BOUTON CLIQUÉ");
             const id_inscription = btn.dataset.id;
+           // console.log("ID =", id_inscription);
 
             const result = await Swal.fire({
                 title: "Supprimer l'inscription ?",
@@ -755,6 +798,7 @@ export default class InscriptionController {
                     token,
                     id_inscription
                 );
+               // console.log("REPONSE API :", res);
 
                 if (!res.ok) {
 
@@ -775,8 +819,7 @@ export default class InscriptionController {
 
                 $("#detailInscriptionModal").modal("hide");
 
-                // Recharge la table après suppression
-                InscriptionController.reloadTable();
+                await InscriptionController.getAll();
 
             } catch (error) {
 
@@ -789,9 +832,43 @@ export default class InscriptionController {
                 );
             }
         });
+
+     this.initDataTable();
     }
 
-    // ===== CENTRES PAR CONCOURS =====
+
+    // static async loadCentresByConcours(id_concours) {
+
+    //     const token = AdminController.getToken();
+
+    //     const res =
+    //         await InscriptionModel.getCentresByConcours(
+    //             token,
+    //             id_concours
+    //         );
+
+    //     const select = $("#id_centre");
+
+    //     select.empty();
+
+    //     select.append(
+    //         `<option value="">Sélectionnez un centre</option>`
+    //     );
+
+    //     res.data.forEach(data => {
+
+    //         console.log("DATA", data)
+    //         select.append(`
+    //         <option value="${data.id_centre}">
+    //             ${data.nom}
+    //         </option>
+    //     `);
+
+    //     });
+
+    //     select.trigger("change.select2");
+    // }
+
     static async loadCentresByConcours(
         id_concours,
         selectId = "#id_centre"
@@ -803,6 +880,8 @@ export default class InscriptionController {
                 token,
                 id_concours
             );
+
+       // console.log("CENTRES RECUS :", res);
 
         const select = $(selectId);
 
@@ -822,6 +901,8 @@ export default class InscriptionController {
 
         res.data.forEach(data => {
 
+           // console.log("DATA :", data);
+
             select.append(`
             <option value="${data.id_centre}">
                 ${data.nom}
@@ -834,7 +915,6 @@ export default class InscriptionController {
         return true;
     }
 
-    // ===== EXPORTS =====
     static async downloadExport(type) {
         const token = AdminController.getToken();
 
@@ -892,7 +972,9 @@ export default class InscriptionController {
                 return;
             }
 
-            const url = window.URL.createObjectURL(res.blob);
+            const url = window.URL.createObjectURL(
+                res.blob
+            );
 
             const link = document.createElement("a");
 

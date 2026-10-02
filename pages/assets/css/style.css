@@ -70,7 +70,7 @@
   align-items: center;
   justify-content: center;
   padding: 50px 42px;
-  background: #0756A3;
+  background: #0F8F2E;
   color: #FFFFFF;
   text-align: center;
   box-sizing: border-box;
@@ -199,14 +199,14 @@
   background: #EAF3FB;
   border-radius: 10px;
 
-  color: #0756A3;
+  color: #0F8F2E;
   font-size: 19px;
 }
 
 .admin-login-eyebrow {
   margin: 0 0 5px;
 
-  color: #0756A3;
+  color: #0F8F2E;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -278,7 +278,7 @@
 
 .admin-input-wrapper:focus-within {
   background: #FFFFFF;
-  border-color: #0756A3;
+  border-color: #0F8F2E;
   box-shadow: 0 0 0 3px rgba(7, 86, 163, 0.09);
 }
 
@@ -338,7 +338,7 @@
 }
 
 .admin-toggle-password:hover {
-  color: #0756A3;
+  color: #0F8F2E;
 }
 
 
@@ -378,8 +378,8 @@
   margin-top: 2px;
   padding: 0 20px;
 
-  background: #0756A3;
-  border: 1px solid #0756A3;
+  background: #0F8F2E;
+  border: 1px solid #0F8F2E;
   border-radius: 8px;
 
   color: #FFFFFF;
@@ -397,8 +397,8 @@
 }
 
 .admin-login-button:hover {
-  background: #06447F;
-  border-color: #06447F;
+  background: #0F8F2E;
+  border-color: #0F8F2E;
 }
 
 .admin-login-button:active {
@@ -426,7 +426,7 @@
 }
 
 .admin-login-security>i {
-  color: #16845B;
+  color: #0F8F2E;
   font-size: 14px;
 }
 
@@ -617,8 +617,8 @@
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #03572A;
-  box-shadow: 0 0 0 3px rgba(3, 87, 42, 0.08);
+  border-color: #0F8F2E;
+  box-shadow: 0 0 0 3px rgba(15, 143, 46, 0.08);
 }
 
 .form-group select {
@@ -845,7 +845,7 @@ body {
 .admin-profile-eyebrow {
     margin: 0 0 5px;
 
-    color: #0756A3;
+    color: #0F8F2E;
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 1px;
@@ -879,7 +879,7 @@ body {
     background: #EAF3FB;
     border-radius: 10px;
 
-    color: #0756A3;
+    color: #0F8F2E;
     font-size: 19px;
 }
 
@@ -915,7 +915,7 @@ body {
 
     padding: 30px 35px;
 
-    background: #0756A3;
+    background: #0F8F2E;
 
     box-sizing: border-box;
 }
@@ -938,7 +938,7 @@ body {
     border: 4px solid rgba(255, 255, 255, 0.22);
     border-radius: 50%;
 
-    color: #0756A3;
+    color: #0F8F2E;
 
     font-size: 25px;
     font-weight: 800;
@@ -1020,7 +1020,7 @@ body {
     background: #EAF3FB;
     border-radius: 8px;
 
-    color: #0756A3;
+    color: #0F8F2E;
     font-size: 15px;
 }
 
@@ -1094,7 +1094,7 @@ body {
 
     border-radius: 7px;
 
-    color: #0756A3;
+    color: #0F8F2E;
 
     font-size: 13px;
 }

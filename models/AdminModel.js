@@ -1,4 +1,3 @@
-
 const API_URL = "http://localhost:4000/api/admin";
 
 export default class AdminModel {
@@ -143,7 +142,7 @@ export default class AdminModel {
     static async getProfile(token) {
 
         const res = await fetch(
-            `${API_URL}/admin/profile/${token}`,
+            `${API_URL}/admin/profile`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
