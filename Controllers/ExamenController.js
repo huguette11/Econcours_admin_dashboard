@@ -418,7 +418,7 @@ export default class ExamenController {
 
         if (!select) return;
 
-        const res = await ConcoursModel.getAllConcours(token);
+        const res = await ConcoursModel.getConcoursForSelect(token);
 
         if (!res.ok) {
 
