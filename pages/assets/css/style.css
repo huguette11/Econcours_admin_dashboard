@@ -1675,4 +1675,20 @@ Modal rejet inscription */
     }
 }
 
+.autre-motif-container {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.autre-motif-container textarea {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100%;
+    pointer-events: auto;
+    user-select: text;
+    cursor: text;
+}
+
 

@@ -110,8 +110,8 @@
 
                     <select id="edit_statut" class="form-control">
 
-                        <option value="EN_ATTENTE">
-                            EN_ATTENTE
+                        <option value="TRAITEMENT">
+                            EN TRAITEMENT
                         </option>
 
                         <option value="VALIDEE">

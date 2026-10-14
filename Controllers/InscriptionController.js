@@ -1125,6 +1125,7 @@ export default class InscriptionController {
 
 
                 const resultat = await Swal.fire({
+                    target: document.getElementById("detailInscriptionModal"),
                     title: "Rejeter l'inscription",
                     html: contenuHTML,
                     width: 600,
@@ -1138,6 +1139,7 @@ export default class InscriptionController {
 
                     didOpen: () => {
                         const popup = Swal.getPopup();
+
 
                         const autreCheckbox = popup.querySelector("#motif-autre");
                         const autreContainer = popup.querySelector("#autre-motif-container");
@@ -1166,16 +1168,32 @@ export default class InscriptionController {
 
                             if (!autreCheckbox.checked) {
                                 autreTexte.value = "";
+                                compteurCaracteres.textContent = "0/1000";
+                            } else {
+                                autreTexte.focus();
                             }
 
                             mettreAJour();
+                        });
+
+                        autreTexte.addEventListener("click", event => {
+                            event.stopPropagation();
+                        });
+
+                        autreTexte.addEventListener("mousedown", event => {
+                            event.stopPropagation();
                         });
 
                         autreTexte.addEventListener("input", () => {
                             compteurCaracteres.textContent =
                                 `${autreTexte.value.length}/1000`;
                         });
+
+                        mettreAJour();
+
+
                     },
+
 
                     preConfirm: () => {
                         const popup = Swal.getPopup();
@@ -1512,6 +1530,38 @@ export default class InscriptionController {
             });
         }
     }
+
+    // static ouvrirSwalDansModal(options) {
+    //     const modalDetails = document.getElementById("detailInscriptionModal");
+
+    //     if (!modalDetails || !$(modalDetails).hasClass("show")) {
+    //         return Swal.fire(options);
+    //     }
+
+    //     const namespace = "focusin.bs.modal";
+    //     const gestionnaireFocus = $._data(document, "events")?.focusin
+    //         ?.find(event => event.namespace === "bs.modal");
+
+    //     if (gestionnaireFocus) {
+    //         $(document).off(namespace);
+    //     }
+
+    //     return Swal.fire({
+    //         ...options,
+    //         didClose: () => {
+    //             if (gestionnaireFocus) {
+    //                 $(document).on(namespace, gestionnaireFocus.handler);
+    //             }
+
+    //             if (typeof options.didClose === "function") {
+    //                 options.didClose();
+    //             }
+    //         }
+    //     });
+
+
+    // }
+
 
     static async exportExcel() {
         await this.downloadExport("excel");
