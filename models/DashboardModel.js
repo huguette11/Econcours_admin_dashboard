@@ -12,6 +12,7 @@ export default class DashboardModel {
                 }
             }
         );
+
         return {
             ok: res.ok,
             data: await res.json()
