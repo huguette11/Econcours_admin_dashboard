@@ -100,7 +100,7 @@
 
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Nombre total de candidat
+                                                Nombre total de candidats
                                             </div>
 
                                             <div id="totalCandidat"

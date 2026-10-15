@@ -16,9 +16,18 @@ export default class DashboardController {
 
         const res = await DashboardModel.dashboard(token);
 
+        console.log("Statut de la requête :", res.ok);
+        console.log("Réponse du serveur :", res.data);
+
+        if (!res.ok) return;
+
         if (!res.ok) return;
 
         const data = res.data.data;
+
+        console.log("Réponse complète :", res.data);
+        console.log("Nombre total de candidats :", data.totalCandidats);
+        console.log("Candidats par concours :", data.candidabyconcours);
 
         const concours = data.candidabyconcours;
 
@@ -35,8 +44,16 @@ export default class DashboardController {
         document.getElementById("totalCandidats").textContent =
             totalCandidats;
 
-        document.getElementById("totalCandidat").textContent =
-            data.totalCandidats;
+        const carteCandidats = document.getElementById("totalCandidat");
+
+        console.log("Élément HTML :", carteCandidats);
+        console.log("Valeur reçue :", data.totalCandidats);
+
+        if (carteCandidats) {
+            carteCandidats.textContent = String(data.totalCandidats);
+
+            console.log("Contenu HTML après affectation :", carteCandidats.textContent);
+        }
 
         document.getElementById("totalPaiements").textContent =
             totalPaiements;
