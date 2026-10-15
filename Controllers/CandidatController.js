@@ -11,7 +11,7 @@ export default class CandidatController {
 
         if (!token) {
             window.location.href = "login.php";
-        
+
             return {
                 draw: params?.draw ?? 0,
                 recordsTotal: 0,
@@ -186,7 +186,7 @@ export default class CandidatController {
 
                 {
                     data: "numero_cnib",
-                    title: "CNIB",
+                    title: "NINA",
                     className: "text-center",
                     render: function (data) {
                         return data || "-";
@@ -574,7 +574,7 @@ ${candidat.statut_compte}
 </p>
 
 <p>
-<strong>CNIB :</strong>
+<strong>NINA :</strong>
 ${candidat.numero_cnib}
 </p>
 

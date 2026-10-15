@@ -628,6 +628,12 @@ export default class ResultatController {
                                     candidat.prenom ||
                                     "-",
 
+                                    candidat.date_naissance ||
+                                    "-",
+
+                                    candidat.numero_cnib ||
+                                    "-",
+
                                     noteCg,
 
                                     noteSp,
@@ -739,6 +745,20 @@ export default class ResultatController {
 
                 {
                     title: "Prénom",
+
+                    className:
+                        "text-center"
+                },
+
+                {
+                    title: "Date de naissance",
+
+                    className:
+                        "text-center"
+                },
+
+                 {
+                    title: "NINA",
 
                     className:
                         "text-center"

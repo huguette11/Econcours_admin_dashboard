@@ -477,7 +477,7 @@ export default class PaiementController {
 
             <div class="col-md-6">
                 <p><strong>Email :</strong> ${candidat.email || "-"}</p>
-                <p><strong>CNIB :</strong> ${candidat.numero_cnib || "-"}</p>
+                <p><strong>NINA :</strong> ${candidat.numero_cnib || "-"}</p>
             </div>
 
         </div>

@@ -90,6 +90,8 @@ export default class ResultatModel {
 
         const result =
             await res.json();
+        
+        console.log("ResultatModel detailResultat", result);
 
         return {
 

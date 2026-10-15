@@ -91,7 +91,7 @@
                         <div class="row">
 
                             <div class="col-md-4">
-                                <label>Numéro CNIB <span class="required">*</span></label>
+                                <label>NINA <span class="required">*</span></label>
                                 <input type="text" name="numero_cnib" class="form-control" required>
                             </div>
 

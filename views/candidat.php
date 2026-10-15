@@ -101,7 +101,7 @@
                                                 <th class="text-center">Date de naissance</th>
                                                 <th class="text-center">Lieu de naissance</th>
                                                 <th class="text-center">Pays de naissance</th> -->
-                                                <th class="text-center">Numéro CNIB/ Pièce d'identité</th>
+                                                <th class="text-center">NINA/ Pièce d'identité</th>
                                                 <!-- <th class="text-center">Date de délivrance</th> -->
                                                 <th class="text-center">Téléphone</th>
                                                 <th class="text-center">Email</th>
@@ -124,7 +124,7 @@
                                                 <th class="text-center">Date de naissance</th>
                                                 <th class="text-center">Lieu de naissance</th>
                                                 <th class="text-center">Pays de naissance</th> -->
-                                                <th class="text-center">Numéro CNIB/ Pièce d'identité</th>
+                                                <th class="text-center">NINA/ Pièce d'identité</th>
                                                 <!-- <th class="text-center">Date de délivrance</th> -->
                                                 <th class="text-center">Téléphone</th>
                                                 <th class="text-center">Email</th>
