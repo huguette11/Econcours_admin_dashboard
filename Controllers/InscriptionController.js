@@ -589,14 +589,16 @@ export default class InscriptionController {
                             ${documentsHTML}
                         </td>
 
-                        <td>
+                       <td>
     <span class="badge ${d.statut_inscription === "VALIDEE"
                             ? "bg-success"
                             : d.statut_inscription === "REJETEE"
                                 ? "bg-danger"
                                 : "bg-warning text-dark"
                         } statut-inscription">
-        ${InscriptionController.escapeHTML(d.statut_inscription || "EN_ATTENTE")}
+        ${InscriptionController.escapeHTML(
+                            d.statut_inscription || "TRAITEMENT"
+                        )}
     </span>
 </td>
 
@@ -609,24 +611,24 @@ export default class InscriptionController {
                         }
                         </td>
 
-                       <td class="checkbox-column text-center">
-                        <input
-                            type="checkbox"
-                            class="form-check-input checkbox-valider-candidature"
-                            data-id="${d.id_inscription}"
-                            data-statut="${d.statut_inscription || "EN_ATTENTE"}"
-                            ${d.statut_inscription === "VALIDEE" ? "checked" : ""}
-                            aria-label="Valider la candidature"
-                            title="Valider la candidature"
-                        >
-                    </td>
+                      <td class="checkbox-column text-center">
+    <input
+        type="checkbox"
+        class="form-check-input checkbox-valider-candidature"
+        data-id="${d.id_inscription}"
+        data-statut="${d.statut_inscription || "TRAITEMENT"}"
+        ${d.statut_inscription === "VALIDEE" ? "checked" : ""}
+        aria-label="Valider la candidature"
+        title="Valider la candidature"
+    >
+</td>
 
                     <td class="checkbox-column text-center">
                         <input
                             type="checkbox"
                             class="form-check-input checkbox-rejeter-candidature"
                             data-id="${d.id_inscription}"
-                            data-statut="${d.statut_inscription || "EN_ATTENTE"}"
+                            data-statut="${d.statut_inscription || "TRAITEMENT"}"
                             ${d.statut_inscription === "REJETEE" ? "checked" : ""}
                             aria-label="Rejeter la candidature"
                             title="Rejeter la candidature"
@@ -787,96 +789,186 @@ export default class InscriptionController {
                 const idInscription = Number(checkbox.dataset.id);
                 const statutPrecedent = checkbox.dataset.statut;
 
-                if (!checkbox.checked) {
-                    checkbox.checked = statutPrecedent === "VALIDEE";
-                    return;
-                }
-
-                const confirmation = await Swal.fire({
-                    icon: "question",
-                    title: "Valider cette inscription ?",
-                    text: "Cette action confirmera l'inscription du candidat.",
-                    showCancelButton: true,
-                    confirmButtonText: "Oui, valider",
-                    cancelButtonText: "Annuler",
-                    confirmButtonColor: "#198754",
-                    reverseButtons: true
-                });
-
-                if (!confirmation.isConfirmed) {
-                    checkbox.checked = statutPrecedent === "VALIDEE";
-                    return;
-                }
-
-                const token = AdminController.getToken();
-
-                if (!token) {
-                    checkbox.checked = statutPrecedent === "VALIDEE";
-
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Session expirée",
-                        text: "Veuillez vous reconnecter."
+                if (checkbox.checked && statutPrecedent === "TRAITEMENT") {
+                    const confirmation = await Swal.fire({
+                        icon: "question",
+                        title: "Valider cette inscription ?",
+                        text: "Cette action confirmera l'inscription du candidat.",
+                        showCancelButton: true,
+                        confirmButtonText: "Oui, valider",
+                        cancelButtonText: "Annuler",
+                        confirmButtonColor: "#198754",
+                        reverseButtons: true
                     });
 
-                    return;
-                }
+                    if (!confirmation.isConfirmed) {
+                        checkbox.checked = false;
+                        return;
+                    }
 
-                checkbox.disabled = true;
+                    const token = AdminController.getToken();
 
-                try {
-                    const response = await InscriptionModel.traiterCandidature(
-                        token,
-                        {
-                            id_inscription: idInscription,
-                            statut_inscription: "VALIDEE"
-                        }
-                    );
+                    if (!token) {
+                        checkbox.checked = false;
 
-                    if (!response.ok) {
-                        throw new Error(
-                            response.data?.message ||
-                            "La validation de l'inscription a échoué."
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Session expirée",
+                            text: "Veuillez vous reconnecter."
+                        });
+
+                        return;
+                    }
+
+                    checkbox.disabled = true;
+
+                    try {
+                        const response = await InscriptionModel.traiterCandidature(
+                            token,
+                            {
+                                id_inscription: idInscription,
+                                statut_inscription: "VALIDEE"
+                            }
                         );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                response.data?.error ||
+                                response.data?.message ||
+                                "La validation de l'inscription a échoué."
+                            );
+                        }
+
+                        const row = checkbox.closest("tr");
+                        const statutBadge = row.querySelector(".statut-inscription");
+                        const checkboxRejet = row.querySelector(
+                            ".checkbox-rejeter-candidature"
+                        );
+
+                        statutBadge.textContent = "VALIDEE";
+                        statutBadge.className = "badge bg-success statut-inscription";
+
+                        checkbox.dataset.statut = "VALIDEE";
+
+                        if (checkboxRejet) {
+                            checkboxRejet.checked = false;
+                            checkboxRejet.dataset.statut = "VALIDEE";
+                        }
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Inscription validée",
+                            text: "La décision a été enregistrée.",
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
+                    } catch (error) {
+                        checkbox.checked = false;
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Erreur",
+                            text: error.message ||
+                                "Impossible de valider cette inscription."
+                        });
+                    } finally {
+                        checkbox.disabled = false;
                     }
 
-                    const row = checkbox.closest("tr");
-                    const statutBadge = row.querySelector(".statut-inscription");
-                    const checkboxRejet = row.querySelector(
-                        ".checkbox-rejeter-candidature"
-                    );
+                    return;
+                }
 
-                    statutBadge.textContent = "VALIDEE";
-                    statutBadge.className = "badge bg-success statut-inscription";
+                if (!checkbox.checked && statutPrecedent === "VALIDEE") {
+                    const confirmation = await Swal.fire({
+                        icon: "warning",
+                        title: "Annuler la validation ?",
+                        text: "L'inscription reviendra au statut En traitement.",
+                        showCancelButton: true,
+                        confirmButtonText: "Oui, annuler la validation",
+                        cancelButtonText: "Conserver la validation",
+                        confirmButtonColor: "#dc3545",
+                        reverseButtons: true
+                    });
 
-                    checkbox.dataset.statut = "VALIDEE";
-
-                    if (checkboxRejet) {
-                        checkboxRejet.checked = false;
-                        checkboxRejet.dataset.statut = "VALIDEE";
+                    if (!confirmation.isConfirmed) {
+                        checkbox.checked = true;
+                        return;
                     }
 
-                    Swal.fire({
-                        icon: "success",
-                        title: "Inscription validée",
-                        text: "La décision a été enregistrée.",
-                        timer: 1800,
-                        showConfirmButton: false
-                    });
-                } catch (error) {
-                    checkbox.checked = statutPrecedent === "VALIDEE";
+                    const token = AdminController.getToken();
 
-                    Swal.fire({
-                        icon: "error",
-                        title: "Erreur",
-                        text: error.message ||
-                            "Impossible de valider cette inscription."
-                    });
+                    if (!token) {
+                        checkbox.checked = true;
 
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Session expirée",
+                            text: "Veuillez vous reconnecter."
+                        });
+
+                        return;
+                    }
+
+                    checkbox.disabled = true;
+
+                    try {
+                        const response = await InscriptionModel.traiterCandidature(
+                            token,
+                            {
+                                id_inscription: idInscription,
+                                statut_inscription: "TRAITEMENT"
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                response.data?.error ||
+                                response.data?.message ||
+                                "Impossible de réinitialiser le statut."
+                            );
+                        }
+
+                        const row = checkbox.closest("tr");
+                        const statutBadge = row.querySelector(".statut-inscription");
+                        const checkboxRejet = row.querySelector(
+                            ".checkbox-rejeter-candidature"
+                        );
+
+                        statutBadge.textContent = "TRAITEMENT";
+                        statutBadge.className =
+                            "badge bg-warning text-dark statut-inscription";
+
+                        checkbox.dataset.statut = "TRAITEMENT";
+
+                        if (checkboxRejet) {
+                            checkboxRejet.checked = false;
+                            checkboxRejet.dataset.statut = "TRAITEMENT";
+                        }
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Décision annulée",
+                            text: "L'inscription est de nouveau en traitement.",
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
+                    } catch (error) {
+                        checkbox.checked = true;
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Erreur",
+                            text: error.message ||
+                                "Impossible de réinitialiser le statut."
+                        });
+                    } finally {
+                        checkbox.disabled = false;
+                    }
+
+                    return;
                 }
-                finally {
-                    checkbox.disabled = false;
-                }
+
+                checkbox.checked = statutPrecedent === "VALIDEE";
             }
         );
 
@@ -888,11 +980,6 @@ export default class InscriptionController {
                 const idInscription = Number(checkbox.dataset.id);
                 const statutPrecedent = checkbox.dataset.statut;
 
-                if (!checkbox.checked) {
-                    checkbox.checked = statutPrecedent === "REJETEE";
-                    return;
-                }
-
                 const token = AdminController.getToken();
 
                 if (!token) {
@@ -904,6 +991,71 @@ export default class InscriptionController {
                         text: "Veuillez vous reconnecter."
                     });
 
+                    return;
+                }
+
+                if (!checkbox.checked && statutPrecedent === "REJETEE") {
+                    checkbox.disabled = true;
+
+                    try {
+                        const response = await InscriptionModel.traiterCandidature(
+                            token,
+                            {
+                                id_inscription: idInscription,
+                                statut_inscription: "TRAITEMENT"
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(
+                                response.data?.error ||
+                                response.data?.message ||
+                                "Impossible d'annuler le rejet."
+                            );
+                        }
+
+                        const row = checkbox.closest("tr");
+                        const statutBadge = row.querySelector(".statut-inscription");
+                        const checkboxValidation = row.querySelector(
+                            ".checkbox-valider-candidature"
+                        );
+
+                        statutBadge.textContent = "TRAITEMENT";
+                        statutBadge.className =
+                            "badge bg-warning text-dark statut-inscription";
+
+                        checkbox.dataset.statut = "TRAITEMENT";
+
+                        if (checkboxValidation) {
+                            checkboxValidation.checked = false;
+                            checkboxValidation.dataset.statut = "TRAITEMENT";
+                        }
+
+                        Swal.fire({
+                            icon: "success",
+                            title: "Rejet annulé",
+                            text: "L'inscription est de nouveau en traitement.",
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } catch (error) {
+                        checkbox.checked = true;
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Erreur",
+                            text: error.message ||
+                                "Impossible d'annuler le rejet."
+                        });
+                    } finally {
+                        checkbox.disabled = false;
+                    }
+
+                    return;
+                }
+
+                if (checkbox.checked && statutPrecedent !== "TRAITEMENT") {
+                    checkbox.checked = statutPrecedent === "REJETEE";
                     return;
                 }
 
