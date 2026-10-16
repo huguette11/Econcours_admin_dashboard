@@ -3,15 +3,13 @@ import AdminController from "./AdminController.js";
 
 export default class PaiementController {
 
-
-
     static async getAll(params) {
 
         const token = AdminController.getToken();
 
         if (!token) {
 
-           window.location.href = "../login.php";
+            window.location.href = "../login.php";
 
             return {
                 draw: params?.draw ?? 0,
@@ -27,11 +25,6 @@ export default class PaiementController {
                 params
             );
 
-        // console.log(
-        //     "RÉPONSE API PAIEMENTS :",
-        //     res
-        // );
-
         if (!res.ok) {
 
             Swal.fire({
@@ -39,7 +32,8 @@ export default class PaiementController {
                 title: "Erreur",
                 text:
                     res.data?.error ||
-                    "Impossible de charger les paiements"
+                    res.data?.message ||
+                    "Impossible de charger les concours"
             });
 
             return {
@@ -59,13 +53,10 @@ export default class PaiementController {
         this.initPaiementDataTable();
     }
 
+    // ===== DATATABLE (LISTE DES CONCOURS) =====
     static initPaiementDataTable() {
 
         if ($.fn.DataTable.isDataTable("#paiementTable")) {
-
-            // console.log(
-            //     "DataTable paiements déjà initialisé"
-            // );
 
             return;
         }
@@ -109,192 +100,43 @@ export default class PaiementController {
                             data.search?.value || "",
 
                         orderColumn:
-                            data.order?.[0]?.column ?? 0,
+                            data.order?.[0]?.column ?? 1,
 
                         orderDir:
-                            data.order?.[0]?.dir ?? "desc"
+                            data.order?.[0]?.dir ?? "asc"
                     };
 
                     const result =
                         await PaiementController.getAll(params);
 
-                    const paiements =
+                    const concours =
                         Array.isArray(result?.data)
                             ? result.data
                             : [];
 
                     const rows =
-                        paiements.map(
-                            (item, index) => {
+                        concours.map(
+                            (c, index) => [
 
-                                const candidat =
-                                    item.candidat || {};
+                                params.start +
+                                index +
+                                1,
 
-                                const listePaiements =
-                                    Array.isArray(item.paiements)
-                                        ? item.paiements
-                                        : [];
+                                `<strong>${c.nom || "-"}</strong>`,
 
-                                const totalMontant =
-                                    listePaiements.reduce(
-                                        (total, paiement) => {
+                                c.annee || "-",
 
-                                            return total +
-                                                Number(
-                                                    paiement.montant || 0
-                                                );
-
-                                        },
-                                        0
-                                    );
-
-                                const concoursUniques =
-                                    [
-                                        ...new Map(
-                                            listePaiements
-                                                .map(
-                                                    paiement =>
-                                                        paiement.inscription?.concours
-                                                )
-                                                .filter(Boolean)
-                                                .map(
-                                                    concours => [
-                                                        concours.id_concours,
-                                                        concours
-                                                    ]
-                                                )
-                                        ).values()
-                                    ];
-
-                                const concoursHTML =
-                                    concoursUniques
-                                        .slice(0, 2)
-                                        .map(
-                                            concours => `
-                                    <div>
-                                        <strong>
-                                            ${concours.nom || "-"}
-                                        </strong>
-
-                                        ${concours.annee
-                                                    ? `
-                                                    <small class="text-muted">
-                                                        (${concours.annee})
-                                                    </small>
-                                                `
-                                                    : ""
-                                                }
-                                    </div>
                                 `
-                                        )
-                                        .join("");
-
-                                const autresConcours =
-                                    concoursUniques.length > 2
-                                        ? `
-                                <span class="badge badge-info">
-                                    +${concoursUniques.length - 2} autres
-                                </span>
-                            `
-                                        : "";
-
-                                const modesPaiement =
-                                    [
-                                        ...new Set(
-                                            listePaiements
-                                                .map(
-                                                    paiement =>
-                                                        paiement.mode_paiement
-                                                )
-                                                .filter(Boolean)
-                                        )
-                                    ].join(", ");
-
-                                const statutsPaiement =
-                                    [
-                                        ...new Set(
-                                            listePaiements
-                                                .map(
-                                                    paiement =>
-                                                        paiement.statut_paiement
-                                                )
-                                                .filter(Boolean)
-                                        )
-                                    ].join(", ");
-
-                                const dernierPaiement =
-                                    listePaiements.length > 0
-                                        ? listePaiements
-                                            .map(
-                                                paiement =>
-                                                    paiement.date_paiement
-                                            )
-                                            .filter(Boolean)
-                                            .sort()
-                                            .reverse()[0]
-                                        : null;
-
-                                const datePaiement =
-                                    dernierPaiement
-                                        ? new Date(
-                                            dernierPaiement
-                                        ).toLocaleDateString("fr-FR")
-                                        : "-";
-
-                                return [
-
-                                    params.start +
-                                    index +
-                                    1,
-
-                                    `
-                            <strong>
-                                ${candidat.nom || ""}
-                                ${candidat.prenom || ""}
-                            </strong>
-
-                            ${candidat.email
-                                        ? `
-                                        <br>
-                                        <small class="text-muted">
-                                            ${candidat.email}
-                                        </small>
-                                    `
-                                        : ""
-                                    }
-                        `,
-
-                                    `
-                            ${concoursHTML || "-"}
-
-                            ${autresConcours}
-                        `,
-
-                                    `
-                            <strong>
-                                ${totalMontant.toLocaleString("fr-FR")}
-                                FCFA
-                            </strong>
-                        `,
-
-                                    modesPaiement || "-",
-
-                                    statutsPaiement || "-",
-
-                                    datePaiement,
-
-                                    `
                             <button
                                 type="button"
                                 class="btn btn-info btn-sm btn-detail-paiement"
-                                data-id="${candidat.id_candidat}"
+                                data-id="${c.id_concours}"
                                 title="Voir les paiements"
                             >
                                 <i class="fa fa-eye"></i>
                             </button>
                         `
-                                ];
-                            }
+                            ]
                         );
 
                     callback({
@@ -313,7 +155,7 @@ export default class PaiementController {
                 } catch (error) {
 
                     console.error(
-                        "Erreur chargement paiements :",
+                        "Erreur chargement concours :",
                         error
                     );
 
@@ -340,32 +182,12 @@ export default class PaiementController {
                 },
 
                 {
-                    title: "Candidat",
-                    className: "text-center"
-                },
-
-                {
                     title: "Concours",
                     className: "text-center"
                 },
 
                 {
-                    title: "Montant total",
-                    className: "text-center"
-                },
-
-                {
-                    title: "Mode de paiement",
-                    className: "text-center"
-                },
-
-                {
-                    title: "Statut",
-                    className: "text-center"
-                },
-
-                {
-                    title: "Date",
+                    title: "Année",
                     className: "text-center"
                 },
 
@@ -382,37 +204,9 @@ export default class PaiementController {
                 url:
                     "https://cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json"
             },
+
             layout: {
-                topStart: [
-                    "pageLength",
-                    {
-                        buttons: [
-                            {
-                                text: '<i class="fa fa-file-excel"></i> Excel',
-                                className: "btn-export-excel",
-                                action: async function () {
-                                    await PaiementController.exportExcel();
-                                }
-                            },
-
-                            {
-                                text: '<i class="fa fa-file-word"></i> Word',
-                                className: "btn-export-word",
-                                action: async function () {
-                                    await PaiementController.exportWord();
-                                }
-                            },
-
-                            {
-                                text: '<i class="fa fa-file-pdf"></i> PDF',
-                                className: "btn-export-pdf",
-                                action: async function () {
-                                    await PaiementController.exportPDF();
-                                }
-                            }
-                        ]
-                    }
-                ],
+                topStart: "pageLength",
 
                 topEnd: "search",
 
@@ -429,68 +223,133 @@ export default class PaiementController {
 
         document.body.addEventListener("click", async (e) => {
 
+            // ===== DETAIL CONCOURS (paiements des candidats) =====
             const btn = e.target.closest(".btn-detail-paiement");
 
-            if (!btn) return;
+            if (btn) {
+                await PaiementController.showPaiementDetail(btn.dataset.id);
+                return;
+            }
 
-           // console.log("CLICK DETECTÉ :", btn.dataset.id);
+            // ===== EXPORTS DU CONCOURS =====
+            const btnExport = e.target.closest(".btn-export-paiement");
 
-            await PaiementController.showPaiementDetail(btn.dataset.id);
+            if (btnExport) {
+                await PaiementController.downloadExport(
+                    btnExport.dataset.type,
+                    btnExport.dataset.id
+                );
+            }
         });
     }
-    static currentPaiement = null;
-    static async showPaiementDetail(idCandidat) {
-       // console.log("ID candidat :", idCandidat);
+
+    // ===== DÉTAIL D'UN CONCOURS (PAIEMENTS DES CANDIDATS) =====
+ static async showPaiementDetail(idConcours) {
+
+    try {
 
         const token = AdminController.getToken();
 
-        const res = await PaiementModel.getPaiementDetail(token, idCandidat);
-
-       // console.log("Réponse API :", res);
+        const res = await PaiementModel.getPaiementDetail(token, idConcours);
 
         if (!res.ok) {
-            Swal.fire("Erreur", "Impossible de charger les paiements", "error");
+            Swal.fire(
+                "Info",
+                res.data?.error || "Impossible de charger les paiements",
+                "info"
+            );
             return;
         }
 
         const paiements = res.data.data;
-
-       // console.log("Paiements :", paiements);
 
         if (!paiements || paiements.length === 0) {
             Swal.fire("Info", "Aucun paiement trouvé", "info");
             return;
         }
 
-        PaiementController.currentPaiement = paiements[0].id_paiement;
-        PaiementController.currentCandidat = idCandidat;
-        // IMPORTANT : le candidat vient du premier paiement
-        const candidat = paiements[0].inscription.candidat;
+        // IMPORTANT : le concours vient du premier paiement
+        const concours = paiements[0].inscription.concours;
 
         let html = `
         <div class="row">
 
             <div class="col-md-6">
-                <p><strong>Nom :</strong> ${candidat.nom}</p>
-                <p><strong>Prénom :</strong> ${candidat.prenom}</p>
+                <p><strong>Concours :</strong> ${concours.nom}</p>
+                <p><strong>Année :</strong> ${concours.annee || "-"}</p>
             </div>
 
             <div class="col-md-6">
-                <p><strong>Email :</strong> ${candidat.email || "-"}</p>
-                <p><strong>NINA :</strong> ${candidat.numero_cnib || "-"}</p>
+                <p><strong>Type :</strong> ${concours.type || "-"}</p>
+                <p><strong>Nombre de postes :</strong> ${concours.nombre_postes ?? "-"}</p>
             </div>
+
+        </div>
+
+        <div class="row text-center mb-3">
+
+            <div class="col-md-4">
+                <div class="border rounded p-2">
+                    <small class="text-muted d-block">Montant payé</small>
+                    <strong class="text-success" id="montantPaye">0 FCFA</strong>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="border rounded p-2">
+                    <small class="text-muted d-block">Montant en attente</small>
+                    <strong class="text-warning" id="montantAttente">0 FCFA</strong>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="border rounded p-2">
+                    <small class="text-muted d-block">Montant total prévu</small>
+                    <strong id="montantPrevu">0 FCFA</strong>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mb-3">
+
+            <button
+                type="button"
+                class="btn btn-success btn-sm btn-export-paiement"
+                data-type="excel"
+                data-id="${idConcours}">
+                <i class="fa fa-file-excel"></i> Excel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary btn-sm btn-export-paiement"
+                data-type="word"
+                data-id="${idConcours}">
+                <i class="fa fa-file-word"></i> Word
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-danger btn-sm btn-export-paiement"
+                data-type="pdf"
+                data-id="${idConcours}">
+                <i class="fa fa-file-pdf"></i> PDF
+            </button>
 
         </div>
 
         <hr>
 
-        <h5>Détail des paiements</h5>
+        <h5>Paiements des candidats (${paiements.length})</h5>
         <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Concours</th>
+                    <th>Candidat</th>
+                    <th>Email</th>
+                    <th>NINA</th>
                     <th>Montant</th>
                     <th>Date</th>
                     <th>Mode</th>
@@ -498,15 +357,18 @@ export default class PaiementController {
                 </tr>
             </thead>
             <tbody>
-            </div>
     `;
 
         paiements.forEach(p => {
 
+            const candidat = p.inscription.candidat;
+
             html += `
-            <tr data-id="${p.id_paiement}">
+            <tr data-id="${p.id_paiement}" data-candidat="${candidat.id_candidat}" data-montant="${Number(p.montant || 0)}">
                 <td>${p.id_paiement}</td>
-                <td>${p.inscription.concours.nom}</td>
+                <td>${candidat.nom} ${candidat.prenom}</td>
+                <td>${candidat.email || "-"}</td>
+                <td>${candidat.numero_cnib || "-"}</td>
                 <td>${Number(p.montant).toLocaleString()} FCFA</td>
                 <td>${new Date(p.date_paiement).toLocaleString()}</td>
                 <td>${p.mode_paiement || "-"}</td>
@@ -517,21 +379,52 @@ export default class PaiementController {
                         <option value="ECHOUE" ${p.statut_paiement === "ECHOUE" ? "selected" : ""}>ECHOUE</option>
                     </select>
                 </td>
-        
+
             </tr>
         `;
         });
 
-        html += `</tbody></table>`;
+        html += `</tbody></table></div>`;
 
         document.getElementById("detailPaiementContent").innerHTML = html;
 
-      //  console.log("Avant ouverture modal");
+        PaiementController.updateMontants();
 
         $("#detailPaiementModal").modal("show");
 
-      //  console.log("Après ouverture modal");
+    } catch (error) {
+
+        console.error("Erreur showPaiementDetail :", error);
+
+        Swal.fire("Erreur", error.message, "error");
     }
+}
+
+static updateMontants() {
+
+    let paye = 0;
+    let attente = 0;
+
+    document
+        .querySelectorAll("#detailPaiementContent tbody tr")
+        .forEach(row => {
+
+            const montant = Number(row.dataset.montant || 0);
+            const statut = row.querySelector(".statut-select")?.value;
+
+            if (statut === "REUSSI") {
+                paye += montant;
+            } else if (statut === "ATTENTE") {
+                attente += montant;
+            }
+        });
+
+    const format = (n) => `${n.toLocaleString("fr-FR")} FCFA`;
+
+    document.getElementById("montantPaye").textContent = format(paye);
+    document.getElementById("montantAttente").textContent = format(attente);
+    document.getElementById("montantPrevu").textContent = format(paye + attente);
+}
 
     static initPaiementStatusInlineEdit() {
 
@@ -542,19 +435,17 @@ export default class PaiementController {
 
             const row = select.closest("tr");
             const id_paiement = row.dataset.id;
+            const id_candidat = row.dataset.candidat;
 
             const token = AdminController.getToken();
 
             const statut_paiement = select.value;
 
-            // 1. update visuel immédiat
-            // PaiementController.updateSelectColor(select);
-
-            // 2. update backend
+            // update backend
             const res = await PaiementModel.updatePaiementStatus(
                 token,
                 id_paiement,
-                PaiementController.currentCandidat,
+                id_candidat,
                 statut_paiement
             );
 
@@ -563,7 +454,7 @@ export default class PaiementController {
                 return;
             }
 
-            // 3. feedback léger
+            // feedback léger
             Swal.fire({
                 icon: "success",
                 title: "Statut mis à jour",
@@ -598,7 +489,8 @@ export default class PaiementController {
 
     }
 
-    static async downloadExport(type) {
+    // ===== EXPORTS D'UN CONCOURS =====
+    static async downloadExport(type, id_concours) {
         const token = AdminController.getToken();
 
         if (!token) {
@@ -636,17 +528,17 @@ export default class PaiementController {
 
             switch (type) {
                 case "excel":
-                    res = await PaiementModel.exportExcel(token, filters);
+                    res = await PaiementModel.exportExcel(token, id_concours, filters);
                     extension = "xlsx";
                     break;
 
                 case "word":
-                    res = await PaiementModel.exportWord(token, filters);
+                    res = await PaiementModel.exportWord(token, id_concours, filters);
                     extension = "docx";
                     break;
 
                 case "pdf":
-                    res = await PaiementModel.exportPDF(token, filters);
+                    res = await PaiementModel.exportPDF(token, id_concours, filters);
                     extension = "pdf";
                     break;
 
@@ -681,7 +573,7 @@ export default class PaiementController {
             link.href = url;
 
             link.download =
-                `paiements_${new Date().toISOString().slice(0, 10)}.${extension}`;
+                `paiements_concours_${id_concours}_${new Date().toISOString().slice(0, 10)}.${extension}`;
 
             document.body.appendChild(link);
 
@@ -696,7 +588,7 @@ export default class PaiementController {
             Swal.fire({
                 icon: "success",
                 title: "Export terminé",
-                text: `Les paiements ont été exportés en ${type.toUpperCase()}.`,
+                text: `Les paiements du concours ont été exportés en ${type.toUpperCase()}.`,
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -713,19 +605,5 @@ export default class PaiementController {
             });
         }
     }
-
-    static async exportExcel() {
-        await this.downloadExport("excel");
-    }
-
-    static async exportWord() {
-        await this.downloadExport("word");
-    }
-
-    static async exportPDF() {
-        await this.downloadExport("pdf");
-    }
-
-
 
 }

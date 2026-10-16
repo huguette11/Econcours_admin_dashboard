@@ -52,25 +52,10 @@
                             <div class="header-body">
                                 <div class="row align-items-center py-4">
                                     <div class="col-lg-6 col-7">
-                                        <!-- <h6 class="h2 text-white d-inline-block mb-0">Utilisateur</h6> -->
-                                        <!-- <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                                            <li class="breadcrumb-item"><a href="index.php"><i class="fas fa-home"></i></a></li>
-                                            <li class="breadcrumb-item"><a href="index.php">BIMMO-2 ADMIN</a></li>
-                                            <li class="breadcrumb-item active" aria-current="page">Gestion des utilisateurs</li>
-                                        </ol>
-                                    </nav> -->
                                     </div>
                                     <div class="col-lg-6 col-5 text-right">
 
                                     </div>
-                                    <!-- <div class="text-left">
-                                        <div class="col-md-12">
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                data-target="#ajouter_paiement">Ajouter une catégorie <i
-                                                    class="fa  fa-plus "></i></button>
-                                        </div>
-                                    </div> -->
                                 </div>
 
                             </div>
@@ -82,7 +67,7 @@
                             <div class="card">
                                 <!-- Card header -->
                                 <div class="card-header border-0">
-                                    <h3 class="mb-0">Liste des paiements</h3>
+                                    <h3 class="mb-0">Liste des concours</h3>
                                 </div>
                                 <!-- Light table -->
                                 <div class="table-responsive">
@@ -90,20 +75,12 @@
                                         <thead>
                                             <tr>
                                                 <th class="text-center">N°</th>
-                                                <th class="text-center">Candidat</th>
-                                                <th class="text-center">Paiements</th>
-                                                <th class="text-center">Total payé</th>
-                                                <th class="text-center">Action</th>
+                                                <th class="text-center">Concours</th>
+                                                <th class="text-center">Année</th>
+                                                <th class="text-center">Détails</th>
                                             </tr>
                                         </thead>
                                         <tfoot>
-                                            <!-- <tr>
-                                                <th class="text-center">N°</th>
-                                                <th class="text-center">Candidat</th>
-                                                <th class="text-center">Paiements</th>
-                                                <th class="text-center">Total payé</th>
-                                                <th class="text-center">Action</th>
-                                            </tr> -->
                                         </tfoot>
 
 
@@ -178,7 +155,6 @@
             PaiementController.loadPaiementsByCandidat();
             PaiementController.initPaiementEvents();
             PaiementController.initPaiementStatusInlineEdit();
-            // PaiementController.updateSelectColor(select);
             AdminController.initLogout();
         });
     </script>

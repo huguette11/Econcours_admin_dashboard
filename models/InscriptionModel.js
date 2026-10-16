@@ -57,10 +57,10 @@ export default class InscriptionModel {
         };
     }
 
-    static async detailInscription(token, id_inscription) {
+    static async detailInscription(token, id_concours) {
 
         const res = await fetch(
-            `http://localhost:4000/api/admin/inscriptions/detail-inscription/${id_inscription}`,
+            `http://localhost:4000/api/admin/inscriptions/detail-inscription/${id_concours}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -148,9 +148,9 @@ export default class InscriptionModel {
         };
     }
 
-    static async exportExcel(token) {
+    static async exportExcel(token, id_concours) {
         const res = await fetch(
-            `${API_URL}/inscriptions/export/excel`,
+            `${API_URL}/inscriptions/export/excel/${id_concours}`,
             {
                 method: "GET",
                 headers: {
@@ -178,9 +178,9 @@ export default class InscriptionModel {
         };
     }
 
-    static async exportWord(token) {
+    static async exportWord(token, id_concours) {
         const res = await fetch(
-            `${API_URL}/inscriptions/export/word`,
+            `${API_URL}/inscriptions/export/word/${id_concours}`,
             {
                 method: "GET",
                 headers: {
@@ -208,9 +208,9 @@ export default class InscriptionModel {
         };
     }
 
-    static async exportPDF(token) {
+    static async exportPDF(token, id_concours) {
         const res = await fetch(
-            `${API_URL}/inscriptions/export/pdf`,
+            `${API_URL}/inscriptions/export/pdf/${id_concours}`,
             {
                 method: "GET",
                 headers: {

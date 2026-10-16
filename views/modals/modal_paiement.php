@@ -8,7 +8,7 @@
             <div class="modal-header text-white">
 
                 <h5 class="modal-title">
-                    Détail du paiement
+                    Paiements du concours
                 </h5>
 
                 <button type="button" class="close text-white" data-dismiss="modal">

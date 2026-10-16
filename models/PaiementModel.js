@@ -2,27 +2,6 @@ const API_URL = "http://localhost:4000/api/admin";
 
 export default class PaiementModel {
 
-    // static async getAllPaiements(token, params = "") {
-
-    //     const res = await fetch(
-    //         `http://localhost:4000/api/admin/paiements${params}`,
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         }
-    //     );
-
-    //     const data = await res.json();
-
-    //     console.log("RESULTAT API PAIEMENTS :", data);
-
-    //     return {
-    //         ok: res.ok,
-    //         data
-    //     };
-    // }
-
     static async getAllPaiements(token, params = {}) {
 
         const query = new URLSearchParams({
@@ -30,11 +9,10 @@ export default class PaiementModel {
             start: params.start ?? 0,
             length: params.length ?? 10,
             search: params.search ?? "",
-            orderColumn: params.orderColumn ?? 0,
-            orderDir: params.orderDir ?? "desc"
+            orderColumn: params.orderColumn ?? 1,
+            orderDir: params.orderDir ?? "asc"
         });
 
-       
         const url =
             `http://localhost:4000/api/admin/paiements?${query.toString()}`;
 
@@ -51,17 +29,15 @@ export default class PaiementModel {
 
         const data = await res.json();
 
-      //  console.log("RESULTAT API PAIEMENTS :", data);
-
         return {
             ok: res.ok,
             data
         };
     }
 
-    static async getPaiementDetail(token, idCandidat) {
+    static async getPaiementDetail(token, id_concours) {
         const res = await fetch(
-            `${API_URL}/paiements/${idCandidat}`,
+            `${API_URL}/paiements/${id_concours}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -120,7 +96,7 @@ export default class PaiementModel {
     }
 
 
-    static async exportExcel(token, filters = {}) {
+    static async exportExcel(token, id_concours, filters = {}) {
         const params = new URLSearchParams();
 
         if (filters.statut_paiement) {
@@ -134,7 +110,7 @@ export default class PaiementModel {
         const query = params.toString();
 
         const res = await fetch(
-            `${API_URL}/paiements/export/excel${query ? `?${query}` : ""}`,
+            `${API_URL}/paiements/export/excel/${id_concours}${query ? `?${query}` : ""}`,
             {
                 method: "GET",
                 headers: {
@@ -158,7 +134,7 @@ export default class PaiementModel {
         };
     }
 
-    static async exportWord(token, filters = {}) {
+    static async exportWord(token, id_concours, filters = {}) {
         const params = new URLSearchParams();
 
         if (filters.statut_paiement) {
@@ -172,7 +148,7 @@ export default class PaiementModel {
         const query = params.toString();
 
         const res = await fetch(
-            `${API_URL}/paiements/export/word${query ? `?${query}` : ""}`,
+            `${API_URL}/paiements/export/word/${id_concours}${query ? `?${query}` : ""}`,
             {
                 method: "GET",
                 headers: {
@@ -196,7 +172,7 @@ export default class PaiementModel {
         };
     }
 
-    static async exportPDF(token, filters = {}) {
+    static async exportPDF(token, id_concours, filters = {}) {
         const params = new URLSearchParams();
 
         if (filters.statut_paiement) {
@@ -210,7 +186,7 @@ export default class PaiementModel {
         const query = params.toString();
 
         const res = await fetch(
-            `${API_URL}/paiements/export/pdf${query ? `?${query}` : ""}`,
+            `${API_URL}/paiements/export/pdf/${id_concours}${query ? `?${query}` : ""}`,
             {
                 method: "GET",
                 headers: {
@@ -236,4 +212,3 @@ export default class PaiementModel {
 
 
 }
-

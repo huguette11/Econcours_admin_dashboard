@@ -215,7 +215,7 @@ export default class InscriptionController {
 
             Swal.fire(
                 "Erreur",
-                "Impossible de charger les inscriptions",
+                "Impossible de charger les concours",
                 "error"
             );
 
@@ -230,7 +230,7 @@ export default class InscriptionController {
         return res.data;
     }
 
-    // ===== DATATABLE =====
+    // ===== DATATABLE (LISTE DES CONCOURS) =====
     static initDataTable() {
 
         if ($.fn.DataTable.isDataTable("#inscriptionTable")) {
@@ -270,61 +270,27 @@ export default class InscriptionController {
                     const result =
                         await InscriptionController.getAll(params);
 
-                    const inscriptions =
+                    const concours =
                         Array.isArray(result?.data)
                             ? result.data
                             : Object.values(result?.data || {});
 
-                    const rows = inscriptions.map(
-                        (item, index) => {
+                    const rows = concours.map(
+                        (c, index) => [
+                            params.start + index + 1,
 
-                            const candidat =
-                                item.candidat || {};
+                            c.nom || "-",
 
-                            const listeInscriptions =
-                                item.inscriptions || [];
+                            c.categorie?.libelle || "-",
 
-                            const preview =
-                                listeInscriptions
-                                    .slice(0, 2)
-                                    .map(i => `
-                    <div>
-                        <b>${i.concours?.nom || "-"}</b>
-                    </div>
-                `)
-                                    .join("");
-
-                            const autres =
-                                listeInscriptions.length > 2
-                                    ? `
-                    <span class="badge badge-info">
-                        +${listeInscriptions.length - 2} autres
-                    </span>
-                `
-                                    : "";
-
-                            const idsInscriptions =
-                                listeInscriptions
-                                    .map(i => i.id_inscription)
-                                    .filter(Boolean)
-                                    .join(",");
-
-                            return [
-                                params.start + index + 1,
-
-                                `${candidat.nom || ""} ${candidat.prenom || ""}`,
-
-                                `${preview}${autres}`,
-
-                                `<button
-                type="button"
-                class="btn btn-info btn-sm btn-detail-candidat"
-                data-ids="${idsInscriptions}"
-                title="Voir détail">
-                <i class="fa fa-eye"></i>
-            </button>`
-                            ];
-                        }
+                            `<button
+                                type="button"
+                                class="btn btn-info btn-sm btn-detail-concours"
+                                data-id="${c.id_concours}"
+                                title="Voir les candidats inscrits">
+                                <i class="fa fa-eye"></i>
+                            </button>`
+                        ]
                     );
 
                     callback({
@@ -336,7 +302,7 @@ export default class InscriptionController {
 
                 } catch (error) {
 
-                    console.error("Erreur chargement inscriptions :", error);
+                    console.error("Erreur chargement concours :", error);
 
                     callback({
                         draw: data.draw,
@@ -355,12 +321,13 @@ export default class InscriptionController {
                     searchable: false
                 },
                 {
-                    title: "Candidat",
+                    title: "Concours",
                     className: "text-center"
                 },
                 {
-                    title: "Concours",
-                    className: "text-center"
+                    title: "Catégorie",
+                    className: "text-center",
+                    orderable: false
                 },
                 {
                     title: "Détails",
@@ -375,34 +342,7 @@ export default class InscriptionController {
             },
 
             layout: {
-                topStart: [
-                    "pageLength",
-                    {
-                        buttons: [
-                            {
-                                text: '<i class="fa fa-file-excel"></i> Excel',
-                                className: "btn-export-excel",
-                                action: async function () {
-                                    await InscriptionController.exportExcel();
-                                }
-                            },
-                            {
-                                text: '<i class="fa fa-file-word"></i> Word',
-                                className: "btn-export-word",
-                                action: async function () {
-                                    await InscriptionController.exportWord();
-                                }
-                            },
-                            {
-                                text: '<i class="fa fa-file-pdf"></i> PDF',
-                                className: "btn-export-pdf",
-                                action: async function () {
-                                    await InscriptionController.exportPDF();
-                                }
-                            }
-                        ]
-                    }
-                ],
+                topStart: "pageLength",
                 topEnd: "search",
                 bottomStart: "info",
                 bottomEnd: "paging"
@@ -413,16 +353,19 @@ export default class InscriptionController {
     // ===== ÉVÉNEMENTS =====
     static initEvents() {
 
-        // Détail candidat : handler délégué enregistré UNE seule fois
-        $(document).on("click", ".btn-detail-candidat", function () {
+        // Détail concours : handler délégué enregistré UNE seule fois
+        $(document).on("click", ".btn-detail-concours", function () {
+            InscriptionController.showDetailConcours(
+                $(this).attr("data-id")
+            );
+        });
 
-            const idsInscriptions =
-                $(this)
-                    .attr("data-ids")
-                    .split(",")
-                    .filter(Boolean);
-
-            InscriptionController.showDetailCandidat(idsInscriptions);
+        // Exports du concours (boutons dans la fenêtre de détail)
+        $(document).on("click", ".btn-export-inscription", async function () {
+            await InscriptionController.downloadExport(
+                $(this).attr("data-type"),
+                $(this).attr("data-id")
+            );
         });
 
         // Modifier une inscription
@@ -440,8 +383,8 @@ export default class InscriptionController {
         }
     }
 
-    // ===== DÉTAIL D'UN CANDIDAT =====
-    static async showDetailCandidat(idsInscriptions) {
+    // ===== DÉTAIL D'UN CONCOURS (CANDIDATS INSCRITS) =====
+    static async showDetailConcours(id_concours) {
 
         const token = AdminController.getToken();
 
@@ -455,11 +398,11 @@ export default class InscriptionController {
             return;
         }
 
-        if (!idsInscriptions || idsInscriptions.length === 0) {
+        if (!id_concours) {
             Swal.fire({
                 icon: "warning",
-                title: "Aucune inscription",
-                text: "Aucune inscription trouvée pour ce candidat."
+                title: "Aucun concours",
+                text: "Référence du concours introuvable."
             });
             return;
         }
@@ -468,52 +411,45 @@ export default class InscriptionController {
 
             Swal.fire({
                 title: "Chargement...",
-                text: "Récupération des détails du candidat",
+                text: "Récupération des candidats inscrits",
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
 
-            const responses = await Promise.all(
-                idsInscriptions.map(
-                    idInscription =>
-                        InscriptionModel.detailInscription(
-                            token,
-                            idInscription
-                        )
-                )
+            const res = await InscriptionModel.detailInscription(
+                token,
+                id_concours
             );
 
             Swal.close();
 
-            const details = responses
-                .filter(response => response.ok)
-                .map(response => response.data?.data)
-                .filter(Boolean);
+            const concours = res.data?.data;
 
-            if (details.length === 0) {
+            if (!res.ok || !concours) {
 
                 Swal.fire({
                     icon: "error",
                     title: "Erreur",
-                    text: "Impossible de récupérer les détails des inscriptions."
+                    text: "Impossible de récupérer les candidats de ce concours."
                 });
 
                 return;
             }
 
-            // Le candidat est présent dans chaque DetailInscription
-            const candidat = details[0].candidat;
+            const inscriptions = concours.inscription || [];
 
-            const concoursHTML = details
-                .map(d => {
+            const candidatsHTML = inscriptions
+                .map((d, index) => {
+
+                    const candidat = d.candidat || {};
 
                     const diplomesHTML =
                         d.diplomes?.length
                             ? d.diplomes
                                 .map(
-                                    (diplome, index) => `
+                                    (diplome, idx) => `
                                     <a
                                         href="${diplome.url}"
                                         target="_blank"
@@ -521,7 +457,7 @@ export default class InscriptionController {
                                         class="d-block mb-1"
                                     >
                                         <i class="fa-solid fa-file-pdf text-danger me-1"></i>
-                                        ${InscriptionController.escapeHTML(`Diplôme ${index + 1}`)}
+                                        ${InscriptionController.escapeHTML(`Diplôme ${idx + 1}`)}
                                     </a>
                                 `
                                 )
@@ -529,16 +465,16 @@ export default class InscriptionController {
                             : "-";
 
 
-                    const documents = Array.isArray(d.candidat?.document)
-                        ? d.candidat.document
-                        : d.candidat?.document
-                            ? [d.candidat.document]
+                    const documents = Array.isArray(candidat.document)
+                        ? candidat.document
+                        : candidat.document
+                            ? [candidat.document]
                             : [];
 
                     const documentsHTML = documents.length
-                        ? documents.map((document, index) => {
+                        ? documents.map((document, idx) => {
                             const url = document.url || document.fichier;
-                            const type = document.type_document || `Document ${index + 1}`;
+                            const type = document.type_document || `Document ${idx + 1}`;
 
                             if (!url) {
                                 return `
@@ -566,15 +502,17 @@ export default class InscriptionController {
 
                     return `
 
-
                     <tr>
 
+                        <td>${index + 1}</td>
+
                         <td>
-                            ${d.concours?.nom || "-"}
+                            ${InscriptionController.escapeHTML(candidat.nom || "")}
+                            ${InscriptionController.escapeHTML(candidat.prenom || "")}
                         </td>
 
                         <td>
-                            ${d.concours?.categorie?.libelle || "-"}
+                            ${InscriptionController.escapeHTML(candidat.email || "-")}
                         </td>
 
                         <td>
@@ -641,7 +579,7 @@ export default class InscriptionController {
                                 data-id="${d.id_inscription}"
                                 data-statut="${d.statut_inscription || ""}"
                                 data-centre="${d.centre?.id_centre || ""}"
-                                data-concours="${d.concours?.id_concours || ""}"
+                                data-concours="${concours.id_concours || ""}"
                                 title="Modifier"
                             >
                                 <i class="fa fa-edit"></i>
@@ -672,18 +610,13 @@ export default class InscriptionController {
                 <div class="col-md-6">
 
                     <p>
-                        <strong>Nom :</strong>
-                        ${candidat.nom || "-"}
+                        <strong>Concours :</strong>
+                        ${InscriptionController.escapeHTML(concours.nom || "-")}
                     </p>
 
                     <p>
-                        <strong>Prénom :</strong>
-                        ${candidat.prenom || "-"}
-                    </p>
-
-                    <p>
-                        <strong>Email :</strong>
-                        ${candidat.email || "-"}
+                        <strong>Catégorie :</strong>
+                        ${InscriptionController.escapeHTML(concours.categorie?.libelle || "-")}
                     </p>
 
                 </div>
@@ -691,21 +624,44 @@ export default class InscriptionController {
                 <div class="col-md-6">
 
                     <p>
-                        <strong>Type :</strong>
-                        ${candidat.type_candidat || "-"}
+                        <strong>Nombre de postes :</strong>
+                        ${concours.nombre_postes ?? "-"}
                     </p>
 
                     <p>
-                        <strong>Lieu de naissance :</strong>
-                        ${candidat.lieu_naissance || "-"}
-                    </p>
-
-                    <p>
-                        <strong>ID candidat :</strong>
-                        ${candidat.id_candidat || "-"}
+                        <strong>Statut :</strong>
+                        ${InscriptionController.escapeHTML(concours.statut_concours || "-")}
                     </p>
 
                 </div>
+
+            </div>
+
+            <div class="mb-3">
+
+                <button
+                    type="button"
+                    class="btn btn-success btn-sm btn-export-inscription"
+                    data-type="excel"
+                    data-id="${concours.id_concours}">
+                    <i class="fa fa-file-excel"></i> Excel
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm btn-export-inscription"
+                    data-type="word"
+                    data-id="${concours.id_concours}">
+                    <i class="fa fa-file-word"></i> Word
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-danger btn-sm btn-export-inscription"
+                    data-type="pdf"
+                    data-id="${concours.id_concours}">
+                    <i class="fa fa-file-pdf"></i> PDF
+                </button>
 
             </div>
 
@@ -713,7 +669,7 @@ export default class InscriptionController {
 
             <h5 class="mb-3">
                 <i class="fa fa-file-signature"></i>
-                Inscriptions du candidat
+                Candidats inscrits (${inscriptions.length})
             </h5>
 
             <div class="table-responsive">
@@ -722,8 +678,9 @@ export default class InscriptionController {
 
                     <thead>
                         <tr>
-                            <th>Concours</th>
-                            <th>Catégorie</th>
+                            <th>#</th>
+                            <th>Candidat</th>
+                            <th>Email</th>
                             <th>Centre</th>
                             <th>Diplôme</th>
                             <th>Documents</th>
@@ -737,7 +694,7 @@ export default class InscriptionController {
                     </thead>
 
                     <tbody>
-                        ${concoursHTML}
+                        ${candidatsHTML}
                     </tbody>
 
                 </table>
@@ -752,7 +709,7 @@ export default class InscriptionController {
         } catch (error) {
 
             console.error(
-                "Erreur détail candidat :",
+                "Erreur détail concours :",
                 error
             );
 
@@ -761,7 +718,7 @@ export default class InscriptionController {
             Swal.fire({
                 icon: "error",
                 title: "Erreur",
-                text: "Une erreur est survenue lors du chargement du candidat."
+                text: "Une erreur est survenue lors du chargement du concours."
             });
         }
     }
@@ -1447,6 +1404,7 @@ export default class InscriptionController {
             }
         );
     }
+
     // ===== ENREGISTRER LA MODIFICATION =====
     static async saveInscription() {
 
@@ -1583,8 +1541,8 @@ export default class InscriptionController {
         return true;
     }
 
-    // ===== EXPORTS =====
-    static async downloadExport(type) {
+    // ===== EXPORTS D'UN CONCOURS =====
+    static async downloadExport(type, id_concours) {
         const token = AdminController.getToken();
 
         if (!token) {
@@ -1614,17 +1572,17 @@ export default class InscriptionController {
 
             switch (type) {
                 case "excel":
-                    res = await InscriptionModel.exportExcel(token);
+                    res = await InscriptionModel.exportExcel(token, id_concours);
                     extension = "xlsx";
                     break;
 
                 case "word":
-                    res = await InscriptionModel.exportWord(token);
+                    res = await InscriptionModel.exportWord(token, id_concours);
                     extension = "docx";
                     break;
 
                 case "pdf":
-                    res = await InscriptionModel.exportPDF(token);
+                    res = await InscriptionModel.exportPDF(token, id_concours);
                     extension = "pdf";
                     break;
             }
@@ -1647,7 +1605,7 @@ export default class InscriptionController {
 
             link.href = url;
             link.download =
-                `inscriptions_${new Date().toISOString().slice(0, 10)}.${extension}`;
+                `inscriptions_concours_${id_concours}_${new Date().toISOString().slice(0, 10)}.${extension}`;
 
             document.body.appendChild(link);
 
@@ -1662,7 +1620,7 @@ export default class InscriptionController {
             Swal.fire({
                 icon: "success",
                 title: "Export terminé",
-                text: `Toutes les inscriptions ont été exportées en ${type.toUpperCase()}.`,
+                text: `Les inscriptions du concours ont été exportées en ${type.toUpperCase()}.`,
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -1681,50 +1639,6 @@ export default class InscriptionController {
                 text: "Une erreur est survenue pendant l'export."
             });
         }
-    }
-
-    // static ouvrirSwalDansModal(options) {
-    //     const modalDetails = document.getElementById("detailInscriptionModal");
-
-    //     if (!modalDetails || !$(modalDetails).hasClass("show")) {
-    //         return Swal.fire(options);
-    //     }
-
-    //     const namespace = "focusin.bs.modal";
-    //     const gestionnaireFocus = $._data(document, "events")?.focusin
-    //         ?.find(event => event.namespace === "bs.modal");
-
-    //     if (gestionnaireFocus) {
-    //         $(document).off(namespace);
-    //     }
-
-    //     return Swal.fire({
-    //         ...options,
-    //         didClose: () => {
-    //             if (gestionnaireFocus) {
-    //                 $(document).on(namespace, gestionnaireFocus.handler);
-    //             }
-
-    //             if (typeof options.didClose === "function") {
-    //                 options.didClose();
-    //             }
-    //         }
-    //     });
-
-
-    // }
-
-
-    static async exportExcel() {
-        await this.downloadExport("excel");
-    }
-
-    static async exportWord() {
-        await this.downloadExport("word");
-    }
-
-    static async exportPDF() {
-        await this.downloadExport("pdf");
     }
 
 }
