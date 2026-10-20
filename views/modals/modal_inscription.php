@@ -105,7 +105,7 @@
 
                 <input type="hidden" id="edit_id_inscription">
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label>Statut</label>
 
                     <select id="edit_statut" class="form-control">
@@ -123,7 +123,7 @@
                         </option>
 
                     </select>
-                </div>
+                </div> -->
 
                 <div class="form-group">
 
